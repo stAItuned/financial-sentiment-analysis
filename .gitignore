@@ -3,3 +3,5 @@ resources
 .models
 venv
 *.pyc
+
+notebooks/.ipynb_checkpoints
