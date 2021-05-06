@@ -1,2 +1,2 @@
 # Financial_Sentiment_Analysis
-Sentiment Analyzer for financial context
+Sentiment Analisys models for financial context
