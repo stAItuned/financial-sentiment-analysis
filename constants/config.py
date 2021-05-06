@@ -10,6 +10,7 @@ SMOTE_IMBALANCE = 'smote'
 # DATASET TYPES
 FINANCIAL_DATASET = 'financial_phrases_bank'
 MOVIE_DATASET = 'movie_data'
+TWITTER_DATASET = 'twitter_data'
 
 # MODELS
 LOG_REG = 'logistic_regression'
