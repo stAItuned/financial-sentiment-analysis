@@ -13,7 +13,7 @@ class TwitterDataset(MyDataset):
         return extract_dataset(filepath)
 
     def get_x(self, data=None):
-        return data['text'] if data else self.data['text']
+        return data['Phrase'] if data is not None else self.data['Phrase']
 
     def get_y(self, data=None):
         data_test = self.get_x()
@@ -22,18 +22,18 @@ class TwitterDataset(MyDataset):
     def training_preprocessing(self):
         pass
 
-    def test_preprocessing(self, data):
+    def test_preprocessing(self):
         prep_data = data_preprocessing(self.data,
-                                       norm_contractions=True,
-                                       norm_charsequences=True,
+                                       norm_contractions=False,
+                                       norm_charsequences=False,
                                        twitter=True,
                                        links=True,
                                        norm_whitespaces=True,
-                                       punctuations=True,
-                                       lowering=True,
+                                       punctuations=False,
+                                       lowering=False,
                                        stemming=False,
                                        lemmatization=False,
-                                       stop_words=True, )
+                                       stop_words=True)
 
         return prep_data
 
