@@ -9,6 +9,9 @@ from nltk.corpus import stopwords
 import numpy as np
 import pandas as pd
 
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+
 
 def get_dic_sentiment(labels):
     """
@@ -24,26 +27,45 @@ def get_dic_sentiment(labels):
     return dic_sentiment
 
 
-def plot_piechart(labels, dataset):
+def plot_piechart(labels_twitter, labels_yahoo):
     """
-    :param labels: (series)     --> Series with the predictions
-    :param dataset: (str)       --> type of the dataset (twitter_data/yahoo)
+    :param labels_twitter:
+    :param labels_yahoo:
+    :return:
     """
-    dic_sentiment = get_dic_sentiment(labels)
+    dic_sentiment_twitter = get_dic_sentiment(labels_twitter)
+    dic_sentiment_yahoo = get_dic_sentiment(labels_yahoo)
 
-    if dataset == "twitter_data":
-        color_palette = px.colors.sequential.Teal_r
-        label_title = "TWITTER"
-    elif dataset == "YAHOO":
-        color_palette = px.colors.sequential.BuPu_r
-        label_title = "YAHOO"
+    colors_twitter = ['#03045e', '#00b4d8', '#caf0f8']
+    colors_yahoo = ['#480ca8', '#7209b7', '#f72585']
 
-    fig = px.pie(values=dic_sentiment.values(), names=dic_sentiment.keys(),
-                 title=f'SENTIMENT ANALYSIS - {label_title}',
-                 color_discrete_sequence=color_palette)
+    fig = make_subplots(rows=1, cols=2, specs=[[{'type':'domain'}, {'type':'domain'}]])
+
+    fig.add_trace(go.Pie(labels=list(dic_sentiment_twitter.keys()),
+                         values=list(dic_sentiment_twitter.values()),
+                         name="TWITTER",
+                         marker_colors=colors_twitter,
+                         ),
+                  1, 1)
+
+    fig.add_trace(go.Pie(labels=list(dic_sentiment_yahoo.keys()),
+                         values=list(dic_sentiment_yahoo.values()),
+                         name="YAHOO",
+                         marker_colors=colors_yahoo
+                         ),
+
+                  1, 2)
+
+    fig.update_traces(hoverinfo='label+percent+name')
+    fig.update(layout_title_text='SENTIMENT ANALYSIS - TWITTER VS YAHOO',
+               layout_showlegend=False)
 
     return fig
 
+
+#####################################
+### FIX
+#####################################
 
 def plot_most_frequent(data, k=10, dataset="TWITTER"):
     """
