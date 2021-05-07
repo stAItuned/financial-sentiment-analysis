@@ -5,10 +5,12 @@ import nltk
 import string
 import re
 
+from scripts.loadings import load_contractions_dict
+
 porter = nltk.PorterStemmer()
 lemmatizer = nltk.WordNetLemmatizer()
 
-contractions_dictionary = json.loads(open('resources/dictionaries/english_contractions.json', 'r').read())
+contractions_dictionary = load_contractions_dict()
 
 
 def init_nltk():
