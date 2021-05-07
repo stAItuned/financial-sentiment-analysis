@@ -3,10 +3,8 @@ from typing import Text, Dict
 
 from sklearn.model_selection import train_test_split
 
-from scripts.data.metrics import report
 from scripts.models.utils import init_model
 from scripts.pipelines.preprocessing_pipeline import preprocessing_pipeline
-from scripts.savings import save_model_data
 
 logger = logging.getLogger()
 
@@ -30,4 +28,4 @@ def model_training(model_name: Text,
     y_pred = model.predict(x_test)
     y_pred = dataset.postprocessing(y_pred, model_name)
 
-    return model
+    return model, y_pred, x_test
