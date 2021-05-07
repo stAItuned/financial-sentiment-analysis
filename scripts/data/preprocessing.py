@@ -13,7 +13,6 @@ from core.preprocessing.text_preprocessing import remove_punctuations, stem_sent
 
 import logging
 
-from core.preprocessing.tokenizers import MyTokenizer
 from core.utils.time_utils import timestamp
 
 logger = logging.getLogger(__name__)
@@ -42,6 +41,10 @@ def data_preprocessing(data: pd.DataFrame,
     if norm_contractions:
         logger.info('\t> Normalizing contractions')
         prep_data['Phrase'] = prep_data['Phrase'].apply(normalize_contractions)
+
+    if twitter:
+        logger.info('\t> Cleaning twitter patterns')
+        prep_data['Phrase'] = prep_data['Phrase'].apply(clean_twitter)
 
     if punctuations:
         logger.info('\t> Removing Punctuations')
@@ -82,10 +85,6 @@ def data_preprocessing(data: pd.DataFrame,
     if norm_charsequences:
         logger.info('\t> Normalizing charsequences')
         prep_data['Phrase'] = prep_data['Phrase'].apply(normalize_char_sequences)
-
-    if twitter:
-        logger.info('\t> Cleaning twitter patterns')
-        prep_data['Phrase'] = prep_data['Phrase'].apply(clean_twitter)
 
     prep_data = prep_data.dropna()
 
