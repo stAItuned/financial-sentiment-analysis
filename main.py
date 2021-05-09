@@ -1,38 +1,14 @@
 import streamlit as st
 
-import logging
-from typing import Text, Dict
+from frontend.multiapp import MultiApp
+from frontend import index, sentiment_analysis_page
 
-from streamlit.delta_generator import DeltaGenerator
+app = MultiApp()
 
-from constants.config import TWITTER_DATASET, VADER
-from constants.paths import RESULT_DIR
-from scripts.pipelines.training_pipeline_unsupervised import model_training
+st.title("Stock Manager")
+st.markdown("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.")
 
-from core.utils.plots_sentiment_analysis import plot_piechart, plot_most_frequent, plot_length_distributions
+app.add_app("Home", index.app)
+app.add_app("Sentiment Analysis", sentiment_analysis_page.app)
 
-container_1 = st.beta_container()
-container_2 = st.beta_container()
-sidebar = st.beta_container()
-
-model_name = VADER
-seed = 2021
-
-data_params = {'data_path': 'resources/twitter_dataset/TSLA.csv',
-               'dataset_type': TWITTER_DATASET,
-               'preprocessed': False,
-               'vectorization': None,
-               'vector_params': None,
-               'imbalance': None,
-               'imb_params': None,
-               'test_size': 0.99,
-               'shuffle': False,
-               'train': False}
-
-model_params = {}
-
-_, labels, data = model_training(model_name, data_params, model_params, seed)
-
-with container_1:
-    st.title('TESLA - TSLA')
-    st.plotly_chart(plot_piechart(labels, labels))
+app.run()
