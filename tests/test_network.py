@@ -3,12 +3,9 @@ import logging
 import torch
 from torch import nn
 
-from constants.config import MAX_WORD_SENTENCE, MOVIE_DATASET, TDIDF_EMBEDDING, SMOTE_IMBALANCE
+from constants.config import MAX_WORD_SENTENCE, MOVIE_DATASET, TDIDF_EMBEDDING, TOKENIZER
 from core.utils.network_summary import summary
-from core.utils.range import scale_range
 from scripts.datasets.dataloader import generate_dataloader
-from scripts.datasets.movie_dataset import MovieDataset
-from scripts.datasets.utils import dataset_generation
 from scripts.models.nn_model import NetworkModel
 from scripts.networks.conv_lstm_network import Conv1D_Network
 from scripts.pipelines.preprocessing_pipeline import preprocessing_pipeline
@@ -35,15 +32,18 @@ def test_conv_net():
 def test_network():
     seed = 2021
 
+    emb_dim = 100
+
     dataset_params = {'data_path': 'resources/preprocessed_data/cleaned_data_v1.csv',
                       'dataset_type': MOVIE_DATASET,
                       'preprocessed': True,
-                      'vectorization': TDIDF_EMBEDDING,
-                      'vector_params': {'ngram_range': (1, 3),
-                                        'max_features': 100},
+                      'target_scaling': (0, 1),
+                      'vectorization': TOKENIZER,
+                      # 'vector_params': {'ngram_range': (1, 3),
+                      #                   'max_features': emb_dim},
                       'imbalance': None,
-                      'imb_params': {'random_state': seed,
-                                     'k_neighbors': 1},
+                      # 'imb_params': {'random_state': seed,
+                      #                'k_neighbors': 3},
                       'train': True}
 
     dataloader_params = {'split_size': 0.7,
@@ -51,11 +51,10 @@ def test_network():
                          'batch_size': 32,
                          'random_seed': seed}
 
-    network_params = {'n_words': 50,
-                      'emb_dim': 100,
+    network_params = {'emb_dim': emb_dim,
                       'dataset_type': TDIDF_EMBEDDING,
                       'kernel_size': 3,
-                      'out_channels': 10,
+                      'out_channels': 30,
                       'batch_size': 32,
                       'stride': 2,
                       'padding': 1,
@@ -63,10 +62,11 @@ def test_network():
                       'dropout': 0.4}
 
     training_params = {'epochs': 10,
-                       'lr': 0.01}
+                       'lr': 0.001}
 
-    x, y, _ = preprocessing_pipeline(dataset_params)
-    y = scale_range(y, 0, 1)
+    x, y, dataset, vectorizer = preprocessing_pipeline(dataset_params)
+    network_params['n_words'] = vectorizer.get_n_words()
+
     dataloader = generate_dataloader(x, y, dataloader_params)
     network = Conv1D_Network(network_params)
     loss = nn.BCELoss()
@@ -76,6 +76,8 @@ def test_network():
     model._init_optimizer(training_params['lr'])
 
     model.train(training_params['epochs'])
+
+    return
 
 
 if __name__ == '__main__':

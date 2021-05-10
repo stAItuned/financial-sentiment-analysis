@@ -3,9 +3,10 @@ import numpy as np
 from constants.config import TDIDF_EMBEDDING, SMOTE_IMBALANCE
 from core.decorators.time_decorator import timing
 from core.preprocessing.imbalance import smote_oversampling
+from core.utils.range import scale_range
 from scripts.data.extraction import extract_dataset
 from scripts.data.imbalance import fix_imbalance
-from scripts.data.preprocessing import tdidf_preprocessing, data_preprocessing, x_to_vector
+from scripts.data.preprocessing import tdidf_preprocessing, data_preprocessing, dataset_to_vector
 from scripts.datasets.utils import dataset_generation
 
 
@@ -13,24 +14,34 @@ from scripts.datasets.utils import dataset_generation
 def preprocessing_pipeline(params: Dict):
 
     preprocessed = params['preprocessed']
+    scaling = params.get('target_scaling')
     vectorization_type = params.get('vectorization')
+    vectorization_params = params.get('vector_params')
     imbalance_type = params.get('imbalance')
+    imbalance_params = params.get('imb_params')
     train = params['train']
 
     dataset = dataset_generation(params)
 
+    # Extract preprocessed data
     if train:
         prep_data = dataset.training_preprocessing() if not preprocessed else dataset.data
     else:
         prep_data = dataset.test_preprocessing() if not preprocessed else dataset.data
 
+    # Getting x and y from preprocessed data
     x, y = dataset.get_x(prep_data), dataset.get_y(prep_data)
 
-    x_vector = x_to_vector(x, params['vector_params'], vectorization_type) if vectorization_type is not None else x
+    # Scaling target value
+    y = scale_range(y, scaling[0], scaling[1]) if scaling is not None else y
 
-    x, y = fix_imbalance(x_vector, y, params['imb_params'], imbalance_type) if imbalance_type is not None else (x_vector, np.array(y))
+    # Generate datasets structured in vector
+    x_dataset, y_dataset, vectorized = dataset_to_vector(x, y, vectorization_params, vectorization_type) if vectorization_type is not None else (x, y)
 
-    return x, y, dataset
+    # Handling imbalance dataset
+    x, y = fix_imbalance(x_dataset, y_dataset, imbalance_params, imbalance_type) if imbalance_type is not None else (x_dataset, np.array(y))
+
+    return x, y, dataset, vectorized
 
 
 @timing

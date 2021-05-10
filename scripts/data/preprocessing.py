@@ -14,6 +14,7 @@ from core.preprocessing.text_preprocessing import remove_punctuations, stem_sent
 import logging
 
 from core.utils.time_utils import timestamp
+from scripts.data.tokenize import tokenize_dataset
 
 logger = logging.getLogger(__name__)
 
@@ -33,7 +34,6 @@ def data_preprocessing(data: pd.DataFrame,
                        norm_charsequences: bool = True,
                        twitter: bool = False,
                        save_dir: Text = None):
-
     prep_data = data.copy(deep=True)
     logger.info('> Data Preprocessing')
 
@@ -102,15 +102,19 @@ def data_preprocessing(data: pd.DataFrame,
     return prep_data
 
 
-def x_to_vector(x,
-                params: Dict,
-                vectorization_type: Text):
+def dataset_to_vector(x, y,
+                      params: Dict,
+                      vectorization_type: Text):
+
     if vectorization_type == TDIDF_EMBEDDING:
         x_tdidf, tdidf = tdidf_preprocessing(x, params)
-        return x_tdidf.toarray()
+        return x_tdidf.toarray(), y, tdidf
+
     elif vectorization_type == TOKENIZER:
-        # MyTokenizer
-        pass
+        x, y, tokenizer = tokenize_dataset(x, y)
+
+        return x, y, tokenizer
+
     elif vectorization_type is None:
         return x
     else:

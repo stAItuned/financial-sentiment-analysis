@@ -110,7 +110,7 @@ def generate_conv_1D(params):
 
 def compute_fc_in_features(params):
     out_channels = params['out_channels']
-    kernel_size = params['kernel_size']
+    # kernel_size = params['kernel_size']
     pooling_kernel = params['pooling_kernel']
     stride = params['stride']
     emb_dim = params['emb_dim']

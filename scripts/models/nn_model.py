@@ -37,12 +37,13 @@ class NetworkModel:
         # self.train_losses, self.valid_losses = [], []
 
         for epoch in range(epochs):
-            logger.info(f'   Epoch {epoch}/{epochs}')
+            logger.info(f'   Epoch {epoch}/{epochs-1}')
             self.epoch_count.append(epoch)
             train_loss, valid_loss = self._training_step()
             self.train_losses.append(train_loss)
             self.valid_losses.append(valid_loss)
-            plot_training_step(self.train_losses, self.valid_losses)
+
+        plot_training_step(self.train_losses, self.valid_losses)
 
     @training_decorator
     def _training_step(self):

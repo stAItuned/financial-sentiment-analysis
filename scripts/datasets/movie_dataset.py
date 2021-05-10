@@ -15,10 +15,10 @@ class MovieDataset(MyDataset):
         return extract_dataset(filepath)
 
     def get_x(self, data=None):
-        return data['Phrase'] if data is not None else self.data['Phrase']
+        return data['Phrase'].to_list() if data is not None else self.data['Phrase'].to_list()
 
     def get_y(self, data=None):
-        return data['Sentiment'] if data is not None else self.data['Sentiment']
+        return data['Sentiment'].to_list() if data is not None else self.data['Sentiment'].to_list()
 
     def training_preprocessing(self):
         prep_data = data_preprocessing(self.data,
