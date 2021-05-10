@@ -7,4 +7,4 @@ def scale_range(input, min, max):
     input = input / np.max(input) / (max - min)
     input += min
 
-    return input
+    return input.tolist()

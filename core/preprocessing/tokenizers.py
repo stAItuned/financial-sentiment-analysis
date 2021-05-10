@@ -52,6 +52,9 @@ class MyTokenizer:
     def vocab(self) -> Dict:
         return self._word2idx
 
+    def get_n_words(self) -> int:
+        return len(self.vocab())
+
 
 class CustomTokenizer(MyTokenizer):
 
