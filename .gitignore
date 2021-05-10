@@ -2,3 +2,4 @@
 resources
 .models
 venv
+*__pycache__*
