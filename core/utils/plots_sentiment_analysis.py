@@ -11,6 +11,10 @@ from nltk.corpus import stopwords
 import numpy as np
 import pandas as pd
 
+import datetime as dt
+
+from scipy.signal import medfilt
+
 
 def getOrderedDictionary(data):
     """
@@ -42,9 +46,20 @@ def get_dic_sentiment(labels):
     """
     dic_sentiment = dict(Counter(labels))
 
-    dic_sentiment["negative"] = dic_sentiment.pop(-1)
-    dic_sentiment["neutral"] = dic_sentiment.pop(0)
-    dic_sentiment["positive"] = dic_sentiment.pop(1)
+    if -1 in dic_sentiment:
+        dic_sentiment["negative"] = dic_sentiment.pop(-1)
+    else:
+        dic_sentiment["negative"] = 0
+
+    if 0 in dic_sentiment:
+        dic_sentiment["neutral"] = dic_sentiment.pop(0)
+    else:
+        dic_sentiment["neutral"] = 0
+
+    if 1 in dic_sentiment:
+        dic_sentiment["positive"] = dic_sentiment.pop(1)
+    else:
+        dic_sentiment["positive"] = 0
 
     return dic_sentiment
 
@@ -57,6 +72,7 @@ def filterQuantiles(data, confidence):
                                      in order to remove outliers
 
     :return: (lists)             --> list with the length values for pos/neg/neutral values
+                                     filtered them with the median
     """
     x_neg = data[data['sentiment'] == -1]["length"]
     x_neutr = data[data['sentiment'] == 0]["length"]
@@ -66,6 +82,8 @@ def filterQuantiles(data, confidence):
     # avoid long tail
     lower_quantile = (100 - confidence) / 2
     upper_quantile = (100 - lower_quantile)
+
+
 
     x_neg_cleaned = [x for x in x_neg if x >= np.percentile(x_neg, lower_quantile) and \
                      x <= np.percentile(x_neg, upper_quantile)]
@@ -112,10 +130,26 @@ def plot_piechart(labels_twitter, labels_yahoo):
                   1, 2)
 
     fig.update_traces(hoverinfo='label+percent+name')
-    fig.update(layout_title_text='SENTIMENT ANALYSIS',
+    fig.update(#layout_title_text='SENTIMENT ANALYSIS',
                layout_showlegend=True)
 
     return fig
+
+
+def plot_informative_table(data_twitter, data_yahoo):
+
+    # get minimum and maximum date
+    dates_twitter = [dt.datetime.strptime(date.split(".")[0], '%Y-%m-%dT%H:%M:%S').strftime("%Y-%m-%d %H:%M:%S") for date in data_twitter.index]
+    dates_yahoo = [dt.datetime.strptime(date.split(".")[0], '%Y-%m-%dT%H:%M:%S').strftime("%Y-%m-%d %H:%M:%S") for date in data_yahoo.index]
+
+    n_samples = [len(data_twitter), len(data_yahoo)]
+    min_dates =  [min(dates_twitter), min(dates_yahoo)]
+    max_dates = [max(dates_twitter), max(dates_yahoo)]
+
+    df = pd.DataFrame({ 'Number of samples' : n_samples, 'From' : min_dates, 'To' : max_dates})
+    df = df.set_index([pd.Index(['Twitter','Yahoo'])])
+
+    return df
 
 
 def plot_most_frequent(data_twitter, data_yahoo, k=10):
@@ -146,7 +180,7 @@ def plot_most_frequent(data_twitter, data_yahoo, k=10):
                          ),
                   1, 2)
 
-    fig.update_layout(title="MOST FREQUENT WORDS")
+    #fig.update_layout(title="MOST FREQUENT WORDS")
 
     return fig
 
@@ -161,7 +195,7 @@ def plot_length_distributions(data_t, labels_t, data_y, labels_y):
     :return: (graph)          --> length distribution
     """
     fig = make_subplots(subplot_titles=('Twitter', 'Yahoo'),
-                        cols=2, rows=2,
+                        cols=1, rows=2,
                         vertical_spacing=0.1,
                         horizontal_spacing=0.1
                         )
@@ -197,12 +231,13 @@ def plot_length_distributions(data_t, labels_t, data_y, labels_y):
     for i in range(6):
         if i <= 2:
             fig.append_trace(distplot_left[i], 1, 1)
-            fig.append_trace(distplot_right[i], 1, 2)
+            fig.append_trace(distplot_right[i], 2, 1)
 
         else:
-            fig.append_trace(distplot_left[i], 2, 1)
-            fig.append_trace(distplot_right[i], 2, 2)
+            fig.append_trace(distplot_left[i], 1, 1)
+            fig.append_trace(distplot_right[i], 2, 1)
 
-    fig.update_layout(title_text=f'LENGTH DISTRIBUTION', autosize=False, height=700)
+    fig.update_layout(#title_text=f'LENGTH DISTRIBUTION',
+                      autosize=False, height=700)
 
     return fig
