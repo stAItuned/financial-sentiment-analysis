@@ -19,6 +19,7 @@ logger = logging.getLogger(__name__)
 
 
 def data_preprocessing(data: pd.DataFrame,
+                       feature: Text,
                        punctuations: bool = True,
                        lowering: bool = True,
                        stemming: bool = False,
@@ -40,7 +41,7 @@ def data_preprocessing(data: pd.DataFrame,
 
     if norm_contractions:
         logger.info('\t> Normalizing contractions')
-        prep_data['Phrase'] = prep_data['Phrase'].apply(normalize_contractions)
+        prep_data[feature] = prep_data[feature].apply(normalize_contractions)
 
     if twitter:
         logger.info('\t> Cleaning twitter patterns')
@@ -48,43 +49,47 @@ def data_preprocessing(data: pd.DataFrame,
 
     if punctuations:
         logger.info('\t> Removing Punctuations')
-        prep_data['Phrase'] = prep_data['Phrase'].apply(remove_punctuations)
+        prep_data[feature] = prep_data[feature].apply(remove_punctuations)
 
     if lowering:
         logger.info('\t> Lowering')
-        prep_data['Phrase'] = prep_data['Phrase'].apply(lambda x: str(x).lower())
+        prep_data[feature] = prep_data[feature].apply(lambda x: str(x).lower())
 
     if stop_words:
         logger.info('\t> Removing Stop Words')
-        prep_data['Phrase'] = prep_data['Phrase'].apply(remove_stopwords)
+        prep_data[feature] = prep_data[feature].apply(remove_stopwords)
 
     if stemming:
         logger.info('\t> Stemming')
-        prep_data['Phrase'] = prep_data['Phrase'].apply(stem_sentence)
+        prep_data[feature] = prep_data[feature].apply(stem_sentence)
 
     if lemmatization:
         logger.info('\t> Lemmatization')
-        prep_data['Phrase'] = prep_data['Phrase'].apply(lemmatize_sentence)
+        prep_data[feature] = prep_data[feature].apply(lemmatize_sentence)
 
     if html:
         logger.info('\t> Removing HTML tags')
-        prep_data['Phrase'] = prep_data['Phrase'].apply(remove_html)
+        prep_data[feature] = prep_data[feature].apply(remove_html)
 
     if links:
         logger.info('\t> Removing HTML tags')
-        prep_data['Phrase'] = prep_data['Phrase'].apply(remove_links)
+        prep_data[feature] = prep_data[feature].apply(remove_links)
 
     if norm_punctuation:
         logger.info('\t> Normalizing punctuation')
-        prep_data['Phrase'] = prep_data['Phrase'].apply(normalize_punctuation)
+        prep_data[feature] = prep_data[feature].apply(normalize_punctuation)
 
     if norm_whitespaces:
         logger.info('\t> Normalizing whitespaces')
-        prep_data['Phrase'] = prep_data['Phrase'].apply(normalize_whitespaces)
+        prep_data[feature] = prep_data[feature].apply(normalize_whitespaces)
 
     if norm_charsequences:
         logger.info('\t> Normalizing charsequences')
-        prep_data['Phrase'] = prep_data['Phrase'].apply(normalize_char_sequences)
+        prep_data[feature] = prep_data[feature].apply(normalize_char_sequences)
+
+    if twitter:
+        logger.info('\t> Cleaning twitter patterns')
+        prep_data[feature] = prep_data[feature].apply(clean_twitter)
 
     prep_data = prep_data.dropna()
 
@@ -102,7 +107,7 @@ def x_to_vector(x,
                 vectorization_type: Text):
     if vectorization_type == TDIDF_EMBEDDING:
         x_tdidf, tdidf = tdidf_preprocessing(x, params)
-        return x_tdidf
+        return x_tdidf.toarray()
     elif vectorization_type == TOKENIZER:
         # MyTokenizer
         pass

@@ -4,6 +4,7 @@ from scripts.data.preprocessing import data_preprocessing
 from scripts.datasets.dataset import MyDataset
 import numpy as np
 
+
 class FinancialPhraseBankDataset(MyDataset):
 
     def __init__(self, filepath):

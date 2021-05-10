@@ -19,7 +19,7 @@ def fix_imbalance(x,
         return x_smote, y_smote
 
     elif imbalance_type is None:
-        return x, y
+        return np.array(x), np.array(y)
 
     else:
         raise AttributeError(f'No valid imbalance type: {imbalance_type}')

@@ -1,26 +1,23 @@
 from typing import Dict
-
+import numpy as np
 from constants.config import TDIDF_EMBEDDING, SMOTE_IMBALANCE
 from core.decorators.time_decorator import timing
 from core.preprocessing.imbalance import smote_oversampling
 from scripts.data.extraction import extract_dataset
 from scripts.data.imbalance import fix_imbalance
 from scripts.data.preprocessing import tdidf_preprocessing, data_preprocessing, x_to_vector
-from scripts.datasets.utils import init_dataset
+from scripts.datasets.utils import dataset_generation
 
 
 @timing
 def preprocessing_pipeline(params: Dict):
 
-    data_path = params['data_path']
-    dataset_type = params['dataset_type']
     preprocessed = params['preprocessed']
     vectorization_type = params.get('vectorization')
     imbalance_type = params.get('imbalance')
     train = params['train']
 
-    dataset_class = init_dataset(dataset_type)
-    dataset = dataset_class(data_path)
+    dataset = dataset_generation(params)
 
     if train:
         prep_data = dataset.training_preprocessing() if not preprocessed else dataset.data
@@ -31,7 +28,7 @@ def preprocessing_pipeline(params: Dict):
 
     x_vector = x_to_vector(x, params['vector_params'], vectorization_type) if vectorization_type is not None else x
 
-    x, y = fix_imbalance(x_vector, y, params['imb_params'], imbalance_type) if imbalance_type is not None else (x_vector, y)
+    x, y = fix_imbalance(x_vector, y, params['imb_params'], imbalance_type) if imbalance_type is not None else (x_vector, np.array(y))
 
     return x, y, dataset
 
