@@ -6,15 +6,13 @@ from torch.utils.data import DataLoader
 from scripts.datasets.dataset import NN_Dataset, MyDataset
 
 
-def generate_dataloader(dataset: MyDataset,
+def generate_dataloader(x,y,
                         params: Dict):
 
     batch_size = params['batch_size']
     shuffle = params['shuffle']
     split_size = params['split_size']
     seed = params['random_seed']
-
-    x, y = dataset.get_x(), dataset.get_y()
 
     x_train, x_test, y_train, y_test = train_test_split(x, y,
                                                         train_size=split_size,

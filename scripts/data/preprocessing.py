@@ -104,7 +104,7 @@ def x_to_vector(x,
                 vectorization_type: Text):
     if vectorization_type == TDIDF_EMBEDDING:
         x_tdidf, tdidf = tdidf_preprocessing(x, params)
-        return x_tdidf
+        return x_tdidf.toarray()
     elif vectorization_type == TOKENIZER:
         # MyTokenizer
         pass
