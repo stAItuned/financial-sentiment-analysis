@@ -1,5 +1,5 @@
 from typing import Dict
-
+import numpy as np
 from constants.config import TDIDF_EMBEDDING, SMOTE_IMBALANCE
 from core.decorators.time_decorator import timing
 from core.preprocessing.imbalance import smote_oversampling
@@ -28,7 +28,7 @@ def preprocessing_pipeline(params: Dict):
 
     x_vector = x_to_vector(x, params['vector_params'], vectorization_type) if vectorization_type is not None else x
 
-    x, y = fix_imbalance(x_vector, y, params['imb_params'], imbalance_type) if imbalance_type is not None else (x_vector, y)
+    x, y = fix_imbalance(x_vector, y, params['imb_params'], imbalance_type) if imbalance_type is not None else (x_vector, np.array(y))
 
     return x, y, dataset
 

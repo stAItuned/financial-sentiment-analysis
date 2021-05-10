@@ -11,6 +11,7 @@ SMOTE_IMBALANCE = 'smote'
 FINANCIAL_DATASET = 'financial_phrases_bank'
 MOVIE_DATASET = 'movie_data'
 TWITTER_DATASET = 'twitter_data'
+YAHOO_DATASET = 'yahoo_data'
 
 # MODELS
 LOG_REG = 'logistic_regression'

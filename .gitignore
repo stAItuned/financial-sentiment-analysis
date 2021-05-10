@@ -2,4 +2,7 @@
 resources
 .models
 venv
-*__pycache__*
+*.pyc
+
+notebooks/.ipynb_checkpoints
+*.DS_Store
