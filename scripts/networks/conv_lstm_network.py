@@ -28,7 +28,7 @@ class Conv1D_Network(MyNetwork):
         self.dropout = nn.Dropout(params['dropout'])
 
         self.fc = nn.Linear(in_features=compute_fc_in_features(params),
-                            out_features=1)
+                            out_features=5)
 
     def forward(self, x):
         # x = x.long()[0]
@@ -38,7 +38,7 @@ class Conv1D_Network(MyNetwork):
         if self.embedding is not None:
             emb = self.embedding(x)
             logger.debug(f' \t> Emb shape: {emb.shape}')
-            dropout_emb = self.dropout(x)
+            dropout_emb = self.dropout(emb)
             x = dropout_emb
         else:
             x = x.unsqueeze(1)
@@ -47,10 +47,10 @@ class Conv1D_Network(MyNetwork):
         # x = x.permute(0, 2, 1)
 
         convs = [F.relu(conv(x)) for conv in self.conv_layers]
-        logger.debug(f' \t> Conv shape: {convs[0].shape}')
+        logger.debug(f' \t> Conv shape: {[convs[i].shape for i in range(len(convs))]}')
 
         max_pools = [self.max_pooling(conv).squeeze() for conv in convs]
-        logger.debug(f' \t> Pool shape: {max_pools[0].shape}')
+        logger.debug(f' \t> Pool shape: {[max_pools[i].shape for i in range(len(max_pools))]}')
 
         concat = torch.cat(max_pools, dim=1)
         logger.debug(f' \t> Concat shape: {concat.shape}')
@@ -58,7 +58,7 @@ class Conv1D_Network(MyNetwork):
         flatten = torch.reshape(concat, (concat.shape[0], concat.shape[1] * concat.shape[2]))
         logger.debug(f' \t> Flatten shape: {flatten.shape}')
 
-        out = torch.sigmoid(self.fc(flatten))
+        out = F.softmax(self.fc(flatten), dim=1)
         logger.debug(f' \t> Out shape: {out.shape}')
 
         return out
@@ -94,13 +94,14 @@ def generate_conv_1D(params):
                                      stride=stride,
                                      padding=padding))
 
-    elif isinstance(kernels, list):
-        for kernel in kernels:
+    elif isinstance(kernels, list) and isinstance(padding, list):
+        assert len(kernels) == len(padding), 'Error: no equal len between kernels and padding'
+        for i in range(len(kernels)):
             conv_layers.append(nn.Conv1d(in_channels=params['emb_dim'],
                                          out_channels=out_channels,
-                                         kernel_size=kernel),
-                               stride=stride,
-                               padding=padding)
+                                         kernel_size=kernels[i],
+                                         stride=stride,
+                                         padding=padding[i]))
 
     else:
         raise TypeError(f'No valid input for kernels: {kernels}')
@@ -110,11 +111,11 @@ def generate_conv_1D(params):
 
 def compute_fc_in_features(params):
     out_channels = params['out_channels']
-    # kernel_size = params['kernel_size']
+    kernel_size = params['kernel_size']
     pooling_kernel = params['pooling_kernel']
     stride = params['stride']
     emb_dim = params['emb_dim']
 
-    in_features = ((emb_dim // stride) // pooling_kernel) * out_channels
+    in_features = (((emb_dim // stride) - (kernel_size[0]-1)) // pooling_kernel) * (out_channels * len(kernel_size))
 
     return in_features

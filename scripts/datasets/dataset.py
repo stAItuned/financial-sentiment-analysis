@@ -33,8 +33,8 @@ class NN_Dataset(Dataset):
 
     def __init__(self, x, y):
 
-        self.x = torch.FloatTensor(x)
-        self.y = torch.FloatTensor(y)
+        self.x = torch.IntTensor(x)
+        self.y = torch.IntTensor(y)
 
     def __getitem__(self, index):
         torch.FloatTensor()
