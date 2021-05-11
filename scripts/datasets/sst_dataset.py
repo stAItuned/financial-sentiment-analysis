@@ -30,9 +30,12 @@ class SSTDataset(MyDataset):
     def training_preprocessing(self):
         prep_data = data_preprocessing(self.data,
                                        feature='text',
+                                       norm_contractions=True,
+                                       norm_charsequences=True,
+                                       norm_whitespaces=True,
+                                       norm_punctuation=True,
                                        punctuations=True,
                                        lowering=True,
-                                       stemming=False,
                                        lemmatization=True,
                                        stop_words=True, )
 
