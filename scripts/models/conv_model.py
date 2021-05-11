@@ -24,6 +24,7 @@ class ConvModel(NetworkModel):
                  save_dir: Text):
         super().__init__(network, dataloader, loss, optimizer, save_dir)
         self.name = 'Conv_1D_Model'
+        self.model_path = self._save_path(save_dir)
 
     def train(self,
               epochs: int,
@@ -61,4 +62,4 @@ class ConvModel(NetworkModel):
 
     def save(self):
         super().save()
-        logger.info(f'Saving {self.name} at {self.save_dir}')
+        logger.info(f'Saving {self.name} at {self.model_path}')

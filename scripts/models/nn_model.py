@@ -29,6 +29,7 @@ class NetworkModel:
         self.dataloader = dataloader
         self.loss = loss
         self.optimizer = optimizer
+        self.timestamp = timestamp()
         self.save_dir = save_dir
 
         self.epoch_count = []
@@ -36,6 +37,12 @@ class NetworkModel:
 
     def _init_optimizer(self, lr):
         self.optimizer = self.optimizer(self.network.parameters(), lr=lr)
+
+    def _save_path(self, save_dir):
+        save_dir = f'{save_dir}/' if save_dir[-1] != '/' else save_dir
+        ensure_folder(save_dir)
+        model_path = f'{save_dir}{self.name}_{self.timestamp}.pth'
+        return model_path
 
     def train(self,
               epochs: int,
@@ -51,11 +58,15 @@ class NetworkModel:
             self.train_losses.append(train_loss)
             self.valid_losses.append(valid_loss)
 
-            stop = es.check_stopping(self.valid_losses[-1], self.valid_losses[-2]) if es is not None else False
-            if not stop:
-                self.save()
+            if len(self.valid_losses) > 1:
+                stop = es.check_stopping(self.valid_losses[-1], self.valid_losses[-2]) if es is not None else False
+                if not stop:
+                    self.save()
 
-        plot_training_step(self.train_losses, self.valid_losses)
+        plot_training_step(self.train_losses,
+                           self.valid_losses,
+                           self.save_dir,
+                           self.timestamp)
 
     @training_decorator
     def _training_step(self):
@@ -82,11 +93,7 @@ class NetworkModel:
         pass
 
     def save(self):
-        save_dir = f'{self.save_dir}/' if self.save_dir[-1] != '/' else self.save_dir
-        ensure_folder(save_dir)
-        model_path = f'{save_dir}{self.name}_{timestamp()}.pth'
-
-        torch.save(self, model_path)
+        torch.save(self, self.model_path)
 
     @staticmethod
     def load(model_path: Text):
