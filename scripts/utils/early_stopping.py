@@ -1,4 +1,7 @@
 
+import logging
+
+logger = logging.getLogger('Early Stopping')
 
 class EarlyStopping:
 
@@ -16,6 +19,7 @@ class EarlyStopping:
 
         if loss > previous_loss and abs(loss - previous_loss) > self.min_delta:
             self.cum_patience += 1
+            logger.info(f' > Updating patience: {self.cum_patience}')
 
         return self.cum_patience < self.patience
 
