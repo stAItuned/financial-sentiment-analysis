@@ -24,6 +24,7 @@ class TwitterDataset(MyDataset):
 
     def test_preprocessing(self):
         prep_data = data_preprocessing(self.data,
+                                       'Phrase',
                                        norm_contractions=False,
                                        norm_charsequences=False,
                                        twitter=True,
