@@ -6,24 +6,23 @@ from torch.optim import Optimizer
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
-from core.file_manager.os_utils import ensure_folder
-from core.utils.time_utils import timestamp
 from scripts.models.nn_model import NetworkModel
 from scripts.networks.network_class import MyNetwork
 
 logger = logging.getLogger()
 
 
-class ConvModel(NetworkModel):
+class Pretrained_Bert_Model(NetworkModel):
 
     def __init__(self,
                  network: MyNetwork,
                  dataloader: Dict[Text, DataLoader],
                  loss,
                  optimizer: Optimizer,
-                 save_dir: Text):
-        super().__init__(network, dataloader, loss, optimizer, save_dir)
-        self.name = 'Conv_1D_Model'
+                 save_dir: Text,
+                 device):
+        super().__init__(network, dataloader, loss, optimizer, save_dir, device)
+        self.name = 'Pretrained_bert_model'
         self.model_path = self._save_path(save_dir)
 
     def train(self,
@@ -36,11 +35,15 @@ class ConvModel(NetworkModel):
         super()._train_one_epoch()
         losses = []
 
-        for x, y in tqdm(self.dataloader['train'], desc='Training   '):
+        for data in tqdm(self.dataloader['train'], desc='Training   '):
+            input_ids = data["input_ids"].to(self.device)
+            attention_mask = data["attention_mask"].to(self.device)
+            targets = data["targets"].to(self.device)
 
-            out = self.network.forward(x)
+            out = self.network.forward(input_ids, attention_mask)
+            out = out.squeeze()
 
-            loss = self.loss(out, y.long())
+            loss = self.loss(out, targets.float())
             loss.backward()
             self.optimizer.step()
 
@@ -54,11 +57,15 @@ class ConvModel(NetworkModel):
 
         with torch.no_grad():
 
-            for x, y in tqdm(self.dataloader['valid'], desc='Validation '):
+            for data in tqdm(self.dataloader['valid'], desc='Validation '):
+                input_ids = data["input_ids"].to(self.device)
+                attention_mask = data["attention_mask"].to(self.device)
+                targets = data["targets"].to(self.device)
 
-                out = self.network.forward(x)
+                out = self.network.forward(input_ids, attention_mask)
+                out = out.squeeze()
 
-                loss = self.loss(out, y.long())
+                loss = self.loss(out, targets.float())
 
                 losses.append(loss.item())
 

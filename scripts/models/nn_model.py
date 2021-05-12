@@ -22,15 +22,17 @@ class NetworkModel:
                  dataloader: Dict[Text, DataLoader],
                  loss,
                  optimizer: Optimizer,
-                 save_dir: Text):
+                 save_dir: Text,
+                 device):
 
         self.name = None
-        self.network = network
+        self.network = network.to(device)
         self.dataloader = dataloader
         self.loss = loss
         self.optimizer = optimizer
         self.timestamp = timestamp()
         self.save_dir = save_dir
+        self.device = device
 
         self.epoch_count = []
         self.train_losses, self.valid_losses = [], []
@@ -76,10 +78,10 @@ class NetworkModel:
         return train_loss, valid_loss
 
     def _train_one_epoch(self):
-        pass
+        self.network.train()
 
     def _validate_one_epoch(self):
-        pass
+        self.network.eval()
 
     @staticmethod
     def early_stopping(patience: int = None,

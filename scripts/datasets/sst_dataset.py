@@ -1,9 +1,15 @@
+import torch
+
 from constants.config import SPACY
 import tensorflow_datasets as tfds
 from scripts.data.preprocessing import data_preprocessing
-from scripts.datasets.dataset import MyDataset
-import numpy as np
+from scripts.datasets.dataset import MyDataset, NN_Dataset
+from transformers import BertTokenizer
 import pandas as pd
+
+from scripts.networks.pretrained_bert import PRE_TRAINED_MODEL_NAME
+
+MAX_LEN = 100
 
 
 class SSTDataset(MyDataset):
@@ -12,6 +18,9 @@ class SSTDataset(MyDataset):
         super().__init__(filepath)
 
     def load_data(self, filepath):
+        if filepath is not None:
+            return pd.read_csv(filepath)
+
         data_df = pd.DataFrame()
         for x in ['train', 'validation', 'test']:
             data = tfds.as_numpy(tfds.load('glue/sst2', split=x, batch_size=-1))
@@ -19,7 +28,7 @@ class SSTDataset(MyDataset):
                                                    'text': data['sentence']}, index=data['idx']))
             data_df['text'] = data_df['text'].apply(lambda x: str(x).replace('b', ''))
 
-        self.data = data_df
+        return data_df
 
     def get_x(self, data=None):
         return data['text'].to_list() if data is not None else self.data['text'].to_list()
@@ -43,7 +52,7 @@ class SSTDataset(MyDataset):
         prep_data = prep_data.drop(prep_data[prep_data['text'].str.isspace() & prep_data['text'] == ''].index)
 
         # Remove duplicated phrases
-        prep_data = prep_data.drop(prep_data[prep_data.duplicated()])
+        prep_data = prep_data.drop(prep_data[prep_data.duplicated()].index)
 
         self.prep_data = prep_data
 
@@ -62,3 +71,32 @@ class SSTDataset(MyDataset):
 
     def postprocessing(self, prediction, model_name):
         pass
+
+
+class Bert_NN_Dataset(NN_Dataset):
+
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.tokenizer = BertTokenizer.from_pretrained(PRE_TRAINED_MODEL_NAME)
+
+    def __getitem__(self, item):
+        sentence = self.x[item]
+        target = self.y[item]
+
+        encoding = self.tokenizer.encode_plus(sentence,
+                                              add_special_tokens=True,
+                                              max_length=MAX_LEN,
+                                              return_token_type_ids=False,
+                                              pad_to_max_length=True,
+                                              return_attention_mask=True,
+                                              return_tensors='pt', )
+
+        return {
+            'review_text': sentence,
+            'input_ids': encoding['input_ids'].flatten(),
+            'attention_mask': encoding['attention_mask'].flatten(),
+            'targets': torch.tensor(target, dtype=torch.long)}
+
+    def __len__(self):
+        return len(self.x)

@@ -1,9 +1,10 @@
 from typing import Text, Dict
 
-from constants.config import MOVIE_DATASET, FINANCIAL_DATASET, TWITTER_DATASET
+from constants.config import MOVIE_DATASET, FINANCIAL_DATASET, TWITTER_DATASET, SST_DATASET
 from core.decorators.time_decorator import timing
 from scripts.datasets.financial_dataset import FinancialPhraseBankDataset
 from scripts.datasets.movie_dataset import MovieDataset
+from scripts.datasets.sst_dataset import SSTDataset
 from scripts.datasets.twitter_dataset import TwitterDataset
 
 
@@ -15,6 +16,8 @@ def init_dataset(dataset_type: Text):
         return FinancialPhraseBankDataset
     elif dataset_type == TWITTER_DATASET:
         return TwitterDataset
+    elif dataset_type == SST_DATASET:
+        return SSTDataset
     else:
         raise AttributeError(f'Dataset type not found: {dataset_type}')
 

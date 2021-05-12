@@ -3,11 +3,9 @@ from typing import Dict
 from sklearn.model_selection import train_test_split
 from torch.utils.data import DataLoader
 
-from scripts.datasets.dataset import NN_Dataset, MyDataset
-
-
 def generate_dataloader(x,y,
-                        params: Dict):
+                        params: Dict,
+                        dataset_class):
 
     batch_size = params['batch_size']
     shuffle = params['shuffle']
@@ -19,7 +17,7 @@ def generate_dataloader(x,y,
                                                         shuffle=shuffle,
                                                         random_state=seed)
 
-    train_dataset, valid_dataset = NN_Dataset(x_train, y_train), NN_Dataset(x_test, y_test)
+    train_dataset, valid_dataset = dataset_class(x_train, y_train), dataset_class(x_test, y_test)
     datasets = {'train': train_dataset,
                 'valid': valid_dataset}
 

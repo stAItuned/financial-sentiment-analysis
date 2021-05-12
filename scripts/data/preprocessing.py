@@ -116,7 +116,7 @@ def dataset_to_vector(x, y,
         return x, y, tokenizer
 
     elif vectorization_type is None:
-        return x
+        return x, y, None
     else:
         raise AttributeError(f'No valid vectorization type found: {vectorization_type}')
 
