@@ -14,7 +14,7 @@ def model_training(model_name: Text,
                    model_params: Dict,
                    seed: int):
 
-    x, y, dataset = preprocessing_pipeline(data_params)
+    x, y, dataset, _ = preprocessing_pipeline(data_params)
 
     x_train, x_test, y_train, y_test = train_test_split(x, y,
                                                         test_size=data_params['test_size'],

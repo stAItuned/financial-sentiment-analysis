@@ -5,7 +5,7 @@ from scripts.datasets.dataset import MyDataset
 import numpy as np
 
 
-class TwitterDataset(MyDataset):
+class YahooDataset(MyDataset):
     def __init__(self, filepath):
         super().__init__(filepath)
 
@@ -13,7 +13,7 @@ class TwitterDataset(MyDataset):
         return extract_dataset(filepath)
 
     def get_x(self, data=None):
-        return data['Phrase'] if data is not None else self.data['Phrase']
+        return data['title'] if data is not None else self.data['title']
 
     def get_y(self, data=None):
         data_test = self.get_x()
@@ -24,10 +24,9 @@ class TwitterDataset(MyDataset):
 
     def test_preprocessing(self):
         prep_data = data_preprocessing(self.data,
-                                       'Phrase',
                                        norm_contractions=False,
                                        norm_charsequences=False,
-                                       twitter=True,
+                                       twitter=False,
                                        links=True,
                                        norm_whitespaces=True,
                                        punctuations=False,
