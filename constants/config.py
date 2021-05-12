@@ -1,4 +1,4 @@
-MAX_WORD_SENTENCE = 15
+MAX_WORD_SENTENCE = 40
 
 # VECTORIZATIONS
 TDIDF_EMBEDDING = 'tdidf'
@@ -18,3 +18,5 @@ YAHOO_DATASET = 'yahoo_data'
 LOG_REG = 'logistic_regression'
 VADER = 'vader'
 SPACY = 'spacy'
+CONV_MODEL = 'conv_model'
+BERT_MODEL = 'bert_model'

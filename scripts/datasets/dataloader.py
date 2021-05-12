@@ -3,14 +3,15 @@ from typing import Dict
 from sklearn.model_selection import train_test_split
 from torch.utils.data import DataLoader
 
+
 def generate_dataloader(x,y,
-                        params: Dict,
-                        dataset_class):
+                        params: Dict):
 
     batch_size = params['batch_size']
     shuffle = params['shuffle']
     split_size = params['split_size']
     seed = params['random_seed']
+    dataset_class = params['dataset_class']
 
     x_train, x_test, y_train, y_test = train_test_split(x, y,
                                                         train_size=split_size,

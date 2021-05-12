@@ -64,6 +64,7 @@ class NetworkModel:
                 stop = es.check_stopping(self.valid_losses[-1], self.valid_losses[-2]) if es is not None else False
                 if not stop:
                     self.save()
+                    break
 
         plot_training_step(self.train_losses,
                            self.valid_losses,

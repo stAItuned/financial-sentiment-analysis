@@ -3,6 +3,7 @@ import logging
 
 logger = logging.getLogger('Early Stopping')
 
+
 class EarlyStopping:
 
     def __init__(self,
@@ -10,7 +11,7 @@ class EarlyStopping:
                  min_delta: float = 0):
 
         self.patience = patience
-        self.min_delta = min_delta
+        self.min_delta = 0 if min_delta is None else min_delta
         self.cum_patience = 0
 
     def check_stopping(self,

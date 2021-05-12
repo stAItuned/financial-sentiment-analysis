@@ -5,7 +5,7 @@ def spent_time(start_time, end_time):
     minutes = (end_time - start_time) // 60
     seconds = (end_time - start_time) - (minutes * 60)
 
-    return ' {:.0f} min {:.0f} sec'.format(minutes, seconds)
+    return '{:.0f} min {:.0f} sec'.format(minutes, seconds)
 
 
 def timestamp():

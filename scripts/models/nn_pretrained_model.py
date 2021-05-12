@@ -74,3 +74,15 @@ class Pretrained_Bert_Model(NetworkModel):
     def save(self):
         super().save()
         logger.info(f'Saving {self.name} at {self.model_path}')
+
+    def predict(self, x):
+
+        input_ids = x['input_ids']
+        attention_mask = x['attention_mask']
+        target = x['targets']
+
+        with torch.no_grad():
+            out = self.network.forward(input_ids, attention_mask)
+            out = out.squeeze()
+
+        return out, target

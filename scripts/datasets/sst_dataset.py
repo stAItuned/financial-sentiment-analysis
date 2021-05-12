@@ -1,6 +1,6 @@
 import torch
 
-from constants.config import SPACY
+import numpy as np
 import tensorflow_datasets as tfds
 from scripts.data.preprocessing import data_preprocessing
 from scripts.datasets.dataset import MyDataset, NN_Dataset
@@ -70,19 +70,19 @@ class SSTDataset(MyDataset):
         return prep_data
 
     def postprocessing(self, prediction, model_name):
-        pass
+        return [np.round(x) for x in prediction]
 
 
 class Bert_NN_Dataset(NN_Dataset):
 
-    def __init__(self, x, y):
+    def __init__(self, x, y=None):
         self.x = x
         self.y = y
         self.tokenizer = BertTokenizer.from_pretrained(PRE_TRAINED_MODEL_NAME)
 
     def __getitem__(self, item):
         sentence = self.x[item]
-        target = self.y[item]
+        target = self.y[item] if self.y is not None else None
 
         encoding = self.tokenizer.encode_plus(sentence,
                                               add_special_tokens=True,
@@ -96,7 +96,7 @@ class Bert_NN_Dataset(NN_Dataset):
             'review_text': sentence,
             'input_ids': encoding['input_ids'].flatten(),
             'attention_mask': encoding['attention_mask'].flatten(),
-            'targets': torch.tensor(target, dtype=torch.long)}
+            'targets': torch.tensor(target, dtype=torch.long) if target is not None else None}
 
     def __len__(self):
         return len(self.x)
