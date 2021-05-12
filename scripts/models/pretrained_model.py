@@ -1,6 +1,7 @@
 import logging
 from typing import Dict, Text
 import numpy as np
+import torch
 from torch.optim import Optimizer
 from torch.utils.data import DataLoader
 from tqdm import tqdm
@@ -18,8 +19,9 @@ class Pretrained_Bert_Model(NetworkModel):
                  dataloader: Dict[Text, DataLoader],
                  loss,
                  optimizer: Optimizer,
-                 save_dir: Text):
-        super().__init__(network, dataloader, loss, optimizer, save_dir)
+                 save_dir: Text,
+                 device):
+        super().__init__(network, dataloader, loss, optimizer, save_dir, device)
         self.name = 'Pretrained_bert_model'
         self.model_path = self._save_path(save_dir)
 
@@ -34,9 +36,9 @@ class Pretrained_Bert_Model(NetworkModel):
         losses = []
 
         for data in tqdm(self.dataloader['train'], desc='Training   '):
-            input_ids = data["input_ids"]
-            attention_mask = data["attention_mask"]
-            targets = data["targets"]
+            input_ids = data["input_ids"].to(self.device)
+            attention_mask = data["attention_mask"].to(self.device)
+            targets = data["targets"].to(self.device)
 
             out = self.network.forward(input_ids, attention_mask)
             out = out.squeeze()
@@ -53,13 +55,15 @@ class Pretrained_Bert_Model(NetworkModel):
         super()._validate_one_epoch()
         losses = []
 
-        for x, y in tqdm(self.dataloader['valid'], desc='Validation '):
+        with torch.no_grad():
 
-            out = self.network.forward(x)
+            for x, y in tqdm(self.dataloader['valid'], desc='Validation '):
 
-            loss = self.loss(out, y.long())
+                out = self.network.forward(x)
 
-            losses.append(loss.item())
+                loss = self.loss(out, y.long())
+
+                losses.append(loss.item())
 
         return np.mean(losses)
 

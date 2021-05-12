@@ -52,13 +52,15 @@ class ConvModel(NetworkModel):
         super()._validate_one_epoch()
         losses = []
 
-        for x, y in tqdm(self.dataloader['valid'], desc='Validation '):
+        with torch.no_grad():
 
-            out = self.network.forward(x)
+            for x, y in tqdm(self.dataloader['valid'], desc='Validation '):
 
-            loss = self.loss(out, y.long())
+                out = self.network.forward(x)
 
-            losses.append(loss.item())
+                loss = self.loss(out, y.long())
+
+                losses.append(loss.item())
 
         return np.mean(losses)
 

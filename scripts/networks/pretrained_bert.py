@@ -1,3 +1,4 @@
+import torch
 from torch import nn
 from torch.nn import functional as F
 from transformers import BertModel
@@ -23,6 +24,6 @@ class Pretrained_Bert_Network(MyNetwork):
         )
 
         x = self.drop(bert_out['pooler_output'])
-        out = F.sigmoid(self.dense(x))
+        out = torch.sigmoid(self.dense(x))
 
         return out
