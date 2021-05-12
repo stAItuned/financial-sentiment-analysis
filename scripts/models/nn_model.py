@@ -76,10 +76,10 @@ class NetworkModel:
         return train_loss, valid_loss
 
     def _train_one_epoch(self):
-        pass
+        self.network.train()
 
     def _validate_one_epoch(self):
-        pass
+        self.network.eval()
 
     @staticmethod
     def early_stopping(patience: int = None,

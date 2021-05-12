@@ -18,6 +18,9 @@ class SSTDataset(MyDataset):
         super().__init__(filepath)
 
     def load_data(self, filepath):
+        if filepath is not None:
+            return pd.read_csv(filepath)
+
         data_df = pd.DataFrame()
         for x in ['train', 'validation', 'test']:
             data = tfds.as_numpy(tfds.load('glue/sst2', split=x, batch_size=-1))

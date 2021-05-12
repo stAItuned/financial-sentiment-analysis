@@ -1,20 +1,17 @@
 import logging
 from typing import Dict, Text
 import numpy as np
-import torch
 from torch.optim import Optimizer
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
-from core.file_manager.os_utils import ensure_folder
-from core.utils.time_utils import timestamp
 from scripts.models.nn_model import NetworkModel
 from scripts.networks.network_class import MyNetwork
 
 logger = logging.getLogger()
 
 
-class ConvModel(NetworkModel):
+class Pretrained_Bert_Model(NetworkModel):
 
     def __init__(self,
                  network: MyNetwork,
@@ -23,7 +20,7 @@ class ConvModel(NetworkModel):
                  optimizer: Optimizer,
                  save_dir: Text):
         super().__init__(network, dataloader, loss, optimizer, save_dir)
-        self.name = 'Conv_1D_Model'
+        self.name = 'Pretrained_bert_model'
         self.model_path = self._save_path(save_dir)
 
     def train(self,
@@ -36,11 +33,15 @@ class ConvModel(NetworkModel):
         super()._train_one_epoch()
         losses = []
 
-        for x, y in tqdm(self.dataloader['train'], desc='Training   '):
+        for data in tqdm(self.dataloader['train'], desc='Training   '):
+            input_ids = data["input_ids"]
+            attention_mask = data["attention_mask"]
+            targets = data["targets"]
 
-            out = self.network.forward(x)
+            out = self.network.forward(input_ids, attention_mask)
+            out = out.squeeze()
 
-            loss = self.loss(out, y.long())
+            loss = self.loss(out, targets.float())
             loss.backward()
             self.optimizer.step()
 
