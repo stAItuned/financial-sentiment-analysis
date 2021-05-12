@@ -57,11 +57,15 @@ class Pretrained_Bert_Model(NetworkModel):
 
         with torch.no_grad():
 
-            for x, y in tqdm(self.dataloader['valid'], desc='Validation '):
+            for data in tqdm(self.dataloader['valid'], desc='Validation '):
+                input_ids = data["input_ids"].to(self.device)
+                attention_mask = data["attention_mask"].to(self.device)
+                targets = data["targets"].to(self.device)
 
-                out = self.network.forward(x)
+                out = self.network.forward(input_ids, attention_mask)
+                out = out.squeeze()
 
-                loss = self.loss(out, y.long())
+                loss = self.loss(out, targets.float())
 
                 losses.append(loss.item())
 
