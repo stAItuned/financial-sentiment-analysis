@@ -16,6 +16,7 @@ contractions_dictionary = load_contractions_dict()
 def init_nltk():
     nltk.download('stopwords')
     nltk.download('wordnet')
+    nltk.download('punkt')
 
 
 def remove_punctuations(text):
