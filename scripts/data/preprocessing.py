@@ -45,7 +45,7 @@ def data_preprocessing(data: pd.DataFrame,
 
     if twitter:
         logger.info('\t> Cleaning twitter patterns')
-        prep_data['Phrase'] = prep_data['Phrase'].apply(clean_twitter)
+        prep_data['text'] = prep_data['text'].apply(clean_twitter)
 
     if punctuations:
         logger.info('\t> Removing Punctuations')
