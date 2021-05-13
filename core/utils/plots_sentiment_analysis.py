@@ -13,7 +13,7 @@ import pandas as pd
 
 import datetime as dt
 
-from scipy.signal import medfilt
+import streamlit as st
 
 
 def getOrderedDictionary(data):
@@ -64,38 +64,31 @@ def get_dic_sentiment(labels):
     return dic_sentiment
 
 
-def filterQuantiles(data, confidence):
+def getCounters(data):
     """
     :param data: (dataframe)     --> dataframe containing the phrases and
                                      their sentiment
-    :param confidence: (double)  --> confidence of the length of distribution
-                                     in order to remove outliers
 
     :return: (lists)             --> list with the length values for pos/neg/neutral values
-                                     filtered them with the median
     """
     x_neg = data[data['sentiment'] == -1]["length"]
     x_neutr = data[data['sentiment'] == 0]["length"]
     x_pos = data[data['sentiment'] == 1]["length"]
 
-    # remove the values outiside the 2.5th and 97.5th percentile
-    # avoid long tail
-    lower_quantile = (100 - confidence) / 2
-    upper_quantile = (100 - lower_quantile)
+    x_neg_dic = pd.Series(x_neg.value_counts())
+    x_neutr_dic = pd.Series(x_neutr.value_counts())
+    x_pos = pd.Series(x_pos.value_counts())
+
+    return x_neg_dic, x_neutr_dic, x_pos
 
 
-
-    x_neg_cleaned = [x for x in x_neg if x >= np.percentile(x_neg, lower_quantile) and \
-                     x <= np.percentile(x_neg, upper_quantile)]
-
-    x_neutr_cleaned = [x for x in x_neutr if x >= np.percentile(x_neutr, lower_quantile) and \
-                       x <= np.percentile(x_neutr, upper_quantile)]
-
-    x_pos_cleaned = [x for x in x_pos if x >= np.percentile(x_pos, lower_quantile) and \
-                     x <= np.percentile(x_pos, 97.5)]
-
-    return x_neg_cleaned, x_neutr_cleaned, x_pos_cleaned
-
+def unpackSeries(x):
+    """
+    :param x: (Series) --> index : length of the titles
+                       --> values : counter
+    :return:
+    """
+    return x.index, x.values
 
 def plot_piechart(labels_twitter, labels_yahoo):
     """
@@ -140,7 +133,7 @@ def plot_informative_table(data_twitter, data_yahoo):
 
     # get minimum and maximum date
     dates_twitter = [dt.datetime.strptime(date.split(".")[0], '%Y-%m-%dT%H:%M:%S').strftime("%Y-%m-%d %H:%M:%S") for date in data_twitter.index]
-    dates_yahoo = [dt.datetime.strptime(date.split(".")[0], '%Y-%m-%dT%H:%M:%S').strftime("%Y-%m-%d %H:%M:%S") for date in data_yahoo.index]
+    dates_yahoo = [dt.datetime.strptime(date.split("Z")[0], '%Y-%m-%d %H:%M:%S').strftime("%Y-%m-%d %H:%M:%S") for date in data_yahoo.index]
 
     n_samples = [len(data_twitter), len(data_yahoo)]
     min_dates =  [min(dates_twitter), min(dates_yahoo)]
@@ -202,18 +195,18 @@ def plot_length_distributions(data_t, labels_t, data_y, labels_y):
 
     # twitter
     data_t = pd.DataFrame(data_t)
-    data_t['length'] = data_t.Phrase.apply(lambda text: len(text))
+    data_t['length'] = data_t.text.apply(lambda text: len(text))
     data_t['sentiment'] = labels_t
 
-    twitter_neg, twitter_neutr, twitter_pos = filterQuantiles(data_t, 95)
+    twitter_neg, twitter_neutr, twitter_pos = getCounters(data_t)
     twitter_hist = [twitter_neg, twitter_neutr, twitter_pos]
 
     # yahoo
     data_y = pd.DataFrame(data_y)
-    data_y['length'] = data_y.Phrase.apply(lambda text: len(text))
+    data_y['length'] = data_y.title.apply(lambda text: len(text))
     data_y['sentiment'] = labels_y
 
-    yahoo_neg, yahoo_neutr, yahoo_pos = filterQuantiles(data_y, 95)
+    yahoo_neg, yahoo_neutr, yahoo_pos = getCounters(data_y)
     yahoo_hist = [yahoo_neg, yahoo_neutr, yahoo_pos]
 
     group_labels = ["negative", "neutral", "positive"]
@@ -222,8 +215,8 @@ def plot_length_distributions(data_t, labels_t, data_y, labels_y):
     colors_yahoo = ['#480ca8', '#7209b7', '#f72585']
 
     # plots
-    fig_twitter = ff.create_distplot(twitter_hist, group_labels, colors=colors_twitter)
-    fig_yahoo = ff.create_distplot(yahoo_hist, group_labels, group_labels, colors=colors_yahoo)
+    fig_twitter = ff.create_distplot(twitter_hist, group_labels, colors=colors_twitter, curve_type='kde')
+    fig_yahoo = ff.create_distplot(yahoo_hist, group_labels, group_labels, colors=colors_yahoo, curve_type='kde')
 
     distplot_left = fig_twitter['data']
     distplot_right = fig_yahoo['data']
@@ -239,5 +232,41 @@ def plot_length_distributions(data_t, labels_t, data_y, labels_y):
 
     fig.update_layout(#title_text=f'LENGTH DISTRIBUTION',
                       autosize=False, height=700)
+
+    return fig
+
+def plot_length_distributionsV2(data_t, labels_t, data_y, labels_y):
+    """
+    :param data_t: (dataframe) --> twitter dataframe
+    :param labels_t: (series)  --> twitter sentiment
+    :param data_y: (dataframe) --> yahoo dataframe
+    :param labels_y: (series)  --> yahoo sentiment
+
+    :return: (graph)          --> length distribution
+    """
+
+    # twitter
+    data_t = pd.DataFrame(data_t)
+    data_t['length'] = data_t.text.apply(lambda text: len(text))
+    data_t['sentiment'] = labels_t
+    data_t['source'] = data_t.text.apply(lambda text: 'Twitter')
+
+    # yahoo
+    data_y = pd.DataFrame(data_y)
+    data_y['length'] = data_y.text.apply(lambda text: len(text))
+    data_y['sentiment'] = labels_y
+    data_y['source'] = data_y.text.apply(lambda text: 'Yahoo')
+
+    dic_sentiment = {-1 : "negative", 0 : "neutral", 1:"positive"}
+    df_concat = data_t.append(data_y)
+    df_concat['sentiment'] = df_concat['sentiment'].apply(lambda x : dic_sentiment[x])
+
+    log_scale = st.checkbox("Logarithmic Scale")
+    fig = px.histogram(df_concat, x="length",
+                       color="sentiment",
+                       opacity=0.8,
+                       facet_row="source",
+                       log_y=log_scale,  # represent bars with log scale
+                       )
 
     return fig
