@@ -13,7 +13,7 @@ class YahooDataset(MyDataset):
         return extract_dataset(filepath)
 
     def get_x(self, data=None):
-        return data['title'] if data is not None else self.data['title']
+        return data['text'] if data is not None else self.data['text']
 
     def get_y(self, data=None):
         data_test = self.get_x()
@@ -24,6 +24,7 @@ class YahooDataset(MyDataset):
 
     def test_preprocessing(self):
         prep_data = data_preprocessing(self.data,
+                                       'text',
                                        norm_contractions=False,
                                        norm_charsequences=False,
                                        twitter=False,
