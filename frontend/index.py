@@ -37,6 +37,8 @@ def app():
         st.markdown("<h3> BENCHMARK COMPARISON </h3>", unsafe_allow_html=True)
         sector, similar_companies = get_sector(ticker_input)
         selected_companies = st.multiselect('Compare it with other companies on the same sector on the S&P500',
-                                             similar_companies)
+                                             similar_companies['Security'])
 
-        st.plotly_chart(plot_sector_companies(ticker_input, start_date, selected_companies), use_container_width=True)
+        st.plotly_chart(plot_sector_companies(ticker_input, start_date,
+                                              selected_companies, similar_companies),
+                        use_container_width=True)
