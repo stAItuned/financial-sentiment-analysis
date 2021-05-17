@@ -13,6 +13,7 @@ MOVIE_DATASET = 'movie_data'
 SST_DATASET = 'sst_dataset'
 TWITTER_DATASET = 'twitter_data'
 YAHOO_DATASET = 'yahoo_data'
+NN_DATASET = 'nn_dataset'
 
 # MODELS
 LOG_REG = 'logistic_regression'
@@ -20,3 +21,4 @@ VADER = 'vader'
 SPACY = 'spacy'
 CONV_MODEL = 'conv_model'
 BERT_MODEL = 'bert_model'
+TRANSFOMER_MODEL = 'transformer_model'

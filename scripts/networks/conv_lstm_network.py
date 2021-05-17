@@ -28,7 +28,7 @@ class Conv1D_Network(MyNetwork):
         self.dropout = nn.Dropout(params['dropout'])
 
         self.fc = nn.Linear(in_features=compute_fc_in_features(params),
-                            out_features=1)
+                            out_features=3)
 
     def forward(self, x):
         # x = x.long()[0]
@@ -58,7 +58,9 @@ class Conv1D_Network(MyNetwork):
         flatten = torch.reshape(concat, (concat.shape[0], concat.shape[1] * concat.shape[2]))
         logger.debug(f' \t> Flatten shape: {flatten.shape}')
 
-        out = torch.sigmoid(self.fc(flatten))
+        # out = torch.sigmoid(self.fc(flatten))
+        # out = torch.tanh(self.fc(flatten))
+        out = torch.softmax(self.fc(flatten), dim=1)
         logger.debug(f' \t> Out shape: {out.shape}')
 
         return out

@@ -20,7 +20,8 @@ def save_model_data(model: Model,
     output_dir = f'{save_dir}{model.name}/{model.name}_{stamp}/'
     ensure_folder(output_dir)
 
-    pickle_save(model, f'{output_dir}{stamp}_{model.name}')
+    if model is not None:
+        pickle_save(model, f'{output_dir}{stamp}_{model.name}')
     save_json(data_params, f'{output_dir}{stamp}_data_params.json')
     save_json(model_params, f'{output_dir}{stamp}_model_params.json')
     report_df.to_csv(f'{output_dir}{stamp}_report.csv')

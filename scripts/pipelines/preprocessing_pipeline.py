@@ -36,12 +36,12 @@ def preprocessing_pipeline(params: Dict):
     y = scale_range(y, scaling[0], scaling[1]) if scaling is not None else y
 
     # Generate datasets structured in vector
-    x_dataset, y_dataset, vectorized = dataset_to_vector(x, y, vectorization_params, vectorization_type) if vectorization_type is not None else (x, y, None)
+    x_dataset, y_dataset, vectorizer = dataset_to_vector(x, y, vectorization_params, vectorization_type) if vectorization_type is not None else (x, y, None)
 
     # Handling imbalance dataset
     x, y = fix_imbalance(x_dataset, y_dataset, imbalance_params, imbalance_type) if imbalance_type is not None else (x_dataset, np.array(y))
 
-    return x, y, dataset, vectorized
+    return x, y, dataset, vectorizer
 
 
 @timing

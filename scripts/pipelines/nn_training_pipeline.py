@@ -35,11 +35,11 @@ def model_training_nn(model_name: Text,
     logger.info(f' > Model: {model.name}')
     logger.info(f' > Test result: \n {report_df}')
 
-    if save_dir:
-        save_model_data(model,
-                        data_params,
-                        model_params,
-                        report_df,
-                        save_dir=save_dir)
+    # if save_dir:
+    #     save_model_data(model,
+    #                     data_params,
+    #                     model_params,
+    #                     report_df,
+    #                     save_dir=save_dir)
 
     return model
