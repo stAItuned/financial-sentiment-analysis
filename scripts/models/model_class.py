@@ -8,7 +8,7 @@ logger = logging.getLogger()
 
 class Model:
 
-    def __init__(self, name, params):
+    def __init__(self, name, params=None):
         self.name = name
         self.model = None
 
@@ -16,6 +16,9 @@ class Model:
         pass
 
     def predict(self, x):
+        pass
+
+    def postprocessing(self, x):
         pass
 
     @staticmethod

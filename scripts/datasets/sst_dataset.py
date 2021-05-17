@@ -2,6 +2,8 @@ import torch
 
 import numpy as np
 import tensorflow_datasets as tfds
+
+from core.utils.range import scale_range
 from scripts.data.preprocessing import data_preprocessing
 from scripts.datasets.dataset import MyDataset, NN_Dataset
 from transformers import BertTokenizer
@@ -34,7 +36,8 @@ class SSTDataset(MyDataset):
         return data['text'].to_list() if data is not None else self.data['text'].to_list()
 
     def get_y(self, data=None):
-        return data['sentiment'].to_list() if data is not None else self.data['sentiment'].to_list()
+        result = data['sentiment'].to_list() if data is not None else self.data['sentiment'].to_list()
+        return np.array(result) + 1
 
     def training_preprocessing(self):
         prep_data = data_preprocessing(self.data,
@@ -70,7 +73,7 @@ class SSTDataset(MyDataset):
         return prep_data
 
     def postprocessing(self, prediction, model_name):
-        return [np.round(x) for x in prediction]
+        return prediction
 
 
 class Bert_NN_Dataset(NN_Dataset):

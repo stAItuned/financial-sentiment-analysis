@@ -17,7 +17,7 @@ def model_training(model_name: Text,
                    seed: int,
                    save_dir=None):
 
-    x, y, dataset = preprocessing_pipeline(data_params)
+    x, y, dataset, vectorizer = preprocessing_pipeline(data_params)
 
     x_train, x_test, y_train, y_test = train_test_split(x, y,
                                                         test_size=data_params['test_size'],

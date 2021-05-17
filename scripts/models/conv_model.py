@@ -1,5 +1,5 @@
 import logging
-
+import numpy as np
 from scripts.models.model_class import Model
 from scripts.models.nn_conv_model import ConvModel
 from scripts.networks.conv_lstm_network import Conv1D_Network
@@ -29,7 +29,9 @@ class Conv_Model(Model):
         self.model.train(epochs, patience, min_delta)
 
     def predict(self, x):
-        return self.model.predict(x[0])
+        prediction = self.model.predict(x[0])
+        result = np.argmax(prediction, axis=1)
+        return result
 
     @staticmethod
     def load(model_path):

@@ -11,7 +11,7 @@ from scripts.networks.conv_lstm_network import Conv1D_Network
 from scripts.pipelines.preprocessing_pipeline import preprocessing_pipeline
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 
 
 def test_conv_net():
@@ -37,7 +37,7 @@ def test_network():
     dataset_params = {'data_path': 'resources/preprocessed_data/cleaned_data_v1.csv',
                       'dataset_type': MOVIE_DATASET,
                       'preprocessed': True,
-                      'target_scaling': (0, 1),
+                      # 'target_scaling': (0, 1),
                       'vectorization': TOKENIZER,
                       # 'vector_params': {'ngram_range': (1, 3),
                       #                   'max_features': emb_dim},
@@ -52,12 +52,12 @@ def test_network():
                          'random_seed': seed}
 
     network_params = {'emb_dim': emb_dim,
-                      'dataset_type': TDIDF_EMBEDDING,
-                      'kernel_size': 3,
+                      'dataset_type': TOKENIZER,
+                      'kernel_size': [3, 5, 7],
                       'out_channels': 30,
                       'batch_size': 32,
-                      'stride': 2,
-                      'padding': 1,
+                      'stride': 1,
+                      'padding': [0, 1, 2],
                       'pooling_kernel': 2,
                       'dropout': 0.4}
 

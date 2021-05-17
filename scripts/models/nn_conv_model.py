@@ -43,7 +43,8 @@ class ConvModel(NetworkModel):
             out = self.network.forward(x)
             out = out.squeeze()
 
-            loss = self.loss(out, y.float())
+            # loss = self.loss(out, y.float())
+            loss = self.loss(out, y.long())
             loss.backward()
             self.optimizer.step()
 
@@ -62,7 +63,8 @@ class ConvModel(NetworkModel):
                 out = self.network.forward(x)
                 out = out.squeeze()
 
-                loss = self.loss(out, y.float())
+                # loss = self.loss(out, y.float())
+                loss = self.loss(out, y.long())
 
                 losses.append(loss.item())
 

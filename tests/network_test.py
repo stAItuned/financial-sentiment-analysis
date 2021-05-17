@@ -5,10 +5,11 @@ from torch import nn
 
 from constants.config import MOVIE_DATASET, TOKENIZER, MAX_WORD_SENTENCE, SST_DATASET
 from scripts.datasets.dataloader import generate_dataloader
+from scripts.datasets.dataset import NN_Dataset
 from scripts.datasets.sst_dataset import Bert_NN_Dataset
-from scripts.models.conv_model import ConvModel
+from scripts.models.nn_conv_model import ConvModel
 from scripts.models.nn_model import NetworkModel
-from scripts.models.pretrained_model import Pretrained_Bert_Model
+from scripts.models.nn_pretrained_model import Pretrained_Bert_Model
 from scripts.networks.conv_lstm_network import Conv1D_Network
 from scripts.networks.pretrained_bert import Pretrained_Bert_Network
 from scripts.pipelines.preprocessing_pipeline import preprocessing_pipeline
@@ -91,7 +92,8 @@ class NetworkTest(unittest.TestCase):
         dataloader_params = {'split_size': 0.7,
                              'shuffle': True,
                              'batch_size': 64,
-                             'random_seed': seed}
+                             'random_seed': seed,
+                             'dataset_class': NN_Dataset}
 
         network_params = {'emb_dim': MAX_WORD_SENTENCE,
                           'dataset_type': TOKENIZER,
@@ -100,7 +102,8 @@ class NetworkTest(unittest.TestCase):
                           'stride': 1,
                           'padding': [0, 1, 2],
                           'pooling_kernel': 2,
-                          'dropout': 0.2}
+                          'dropout': 0.2,
+                          'device': torch.device('cpu:0')}
 
         training_params = {'epochs': 10,
                            'lr': 0.001,
@@ -111,7 +114,7 @@ class NetworkTest(unittest.TestCase):
         network_params['n_words'] = vectorizer.get_n_words()
 
         dataloader = generate_dataloader(x, y, dataloader_params)
-        network = Conv1D_Network(network_params)
+        network = Conv1D_Network(network_params).to(network_params['device'])
         loss = nn.CrossEntropyLoss()
         optimizer = torch.optim.Adam
 
@@ -138,7 +141,8 @@ class NetworkTest(unittest.TestCase):
                              'batch_size': 64,
                              'random_seed': seed}
 
-        network_params = {'dropout': 0.2}
+        network_params = {'dropout': 0.2,
+                          'device': torch.device('cpu:0')}
 
         training_params = {'epochs': 10,
                            'lr': 0.001,
@@ -148,11 +152,11 @@ class NetworkTest(unittest.TestCase):
         x, y, dataset, vectorizer = preprocessing_pipeline(dataset_params)
 
         dataloader = generate_dataloader(x, y, dataloader_params, Bert_NN_Dataset)
-        network = Pretrained_Bert_Network(network_params)
+        network = Pretrained_Bert_Network(network_params).to(network_params['device'])
         loss = nn.BCELoss()
         optimizer = AdamW
 
-        model = Pretrained_Bert_Model(network, dataloader, loss, optimizer, training_params['save_dir'])
+        model = Pretrained_Bert_Model(network, dataloader, loss, optimizer, training_params['save_dir'], network_params['device'])
         model._init_optimizer(training_params['lr'])
 
         model.train(training_params['epochs'], patience=training_params['patience'])

@@ -2,6 +2,7 @@ import unittest
 from constants.paths import PREPROCESSED_DATA_DIR
 from scripts.data.extraction import extract_dataset
 from scripts.data.preprocessing import data_preprocessing
+from scripts.datasets.sst_dataset import SSTDataset
 from scripts.pipelines.preprocessing_pipeline import preprocessing_oversampling_tdidf
 
 
@@ -23,6 +24,9 @@ class DataTests(unittest.TestCase):
 
     def test_preprocessing_oversampling(self):
         preprocessing_oversampling_tdidf('../resources/preprocessed_data/cleaned_data_v1.csv')
+
+    def test_glue_dataset(self):
+        dataset = SSTDataset(None)
 
 
 if __name__ == '__main__':
