@@ -1,7 +1,7 @@
 import logging
 from typing import Text, Dict
 
-from constants.config import TWITTER_DATASET, VADER
+from constants.config import YAHOO_DATASET, VADER
 from constants.paths import RESULT_DIR
 from scripts.pipelines.training_pipeline_unsupervised import model_training
 
@@ -19,18 +19,12 @@ def main(model_name: Text,
 
     _, labels, data = model_training(model_name, data_params, model_params, seed)
 
-    # plot_piechart(labels, TWITTER_DATASET).show()
-
-    # plot_most_frequent(data, 10, TWITTER_DATASET).show()
-
-    # plot_length_distributions(data, labels, TWITTER_DATASET).show()
-
 if __name__ == '__main__':
     model_name = VADER
     seed = 2021
 
-    data_params = {'data_path': 'resources/twitter_dataset/TSLA.csv',
-                   'dataset_type': TWITTER_DATASET,
+    data_params = {'data_path': 'resources/yahoo_dataset/AAPL-News-cleaned.csv',
+                   'dataset_type': YAHOO_DATASET,
                    'preprocessed': False,
                    'vectorization': None,
                    'vector_params': None,

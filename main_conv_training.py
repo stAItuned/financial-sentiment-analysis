@@ -5,7 +5,7 @@ import torch
 from torch import nn
 
 from constants.config import SST_DATASET, \
-    MAX_WORD_SENTENCE, TOKENIZER, CONV_MODEL
+    MAX_WORD_SENTENCE, TOKENIZER, CONV_MODEL, MOVIE_DATASET, NN_DATASET
 from constants.paths import RESULT_DIR
 from scripts.datasets.dataset import NN_Dataset
 from scripts.networks.conv_lstm_network import Conv1D_Network
@@ -35,28 +35,36 @@ if __name__ == '__main__':
                    'imbalance': None,
                    'train': True}
 
+    # data_params = {'data_path': 'resources/preprocessed_data/cleaned_data_v1.csv',
+    #                'dataset_type': MOVIE_DATASET,
+    #                'preprocessed': True,
+    #                'vectorization': TOKENIZER,
+    #                'imbalance': None,
+    #                'train': True}
+
     dataloader_params = {'split_size': 0.7,
                          'shuffle': True,
                          'batch_size': 64,
                          'random_seed': seed,
-                         'dataset_class': NN_Dataset}
+                         'dataset_type': NN_DATASET}
 
     network_params = {'emb_dim': MAX_WORD_SENTENCE,
                       'dataset_type': TOKENIZER,
                       'kernel_size': [5, 7, 9],
-                      'out_channels': 10,
+                      'out_channels': 20,
                       'stride': 1,
                       'padding': [0, 1, 2],
                       'pooling_kernel': 2,
-                      'dropout': 0.2,
+                      'dropout': 0.3,
                       'device': torch.device('cpu:0')}
 
-    training_params = {'epochs': 15,
-                       'lr': 0.001,
+    training_params = {'epochs': 100,
+                       'lr': 0.0001,
                        'save_dir': 'resources/models/',
                        'patience': 2}
 
-    loss = nn.BCELoss()
+    # loss = nn.BCELoss()
+    loss = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam
 
     model_params = {'network': network_params,

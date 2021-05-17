@@ -1,7 +1,15 @@
 import streamlit as st
 
+st.set_page_config(layout='centered',
+                   page_title="Stock Manager",
+                   page_icon="🧊",
+                   # initial_sidebar_state="expanded" or "auto" or "collapsed"
+                   )
+
 from frontend.multiapp import MultiApp
 from frontend import index, sentiment_analysis_page
+
+
 
 app = MultiApp()
 
