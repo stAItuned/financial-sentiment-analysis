@@ -1,5 +1,5 @@
 import logging
-from typing import Iterable
+from typing import Iterable, List
 
 from tqdm import tqdm
 
@@ -20,7 +20,7 @@ class Transformer_Model(Model):
 
     def predict(self, x):
 
-        if isinstance(x, Iterable):
+        if isinstance(x, List):
             prediction = []
             for sentence in tqdm(x, desc=' > Predict'):
                 pred = self.model(sentence)[0]
@@ -28,11 +28,14 @@ class Transformer_Model(Model):
                 sentiment = polarity * pred['score']
                 prediction.append(sentiment)
 
-        else:
-            pred = self.model(x)
+        elif isinstance(x, str):
+            pred = self.model(x)[0]
             polarity = 1 if pred['label'] == 'POSITIVE' else -1 if pred['label'] == 'NEGATIVE' else 0
             sentiment = polarity * pred['score']
             prediction = sentiment
+
+        else:
+            raise AttributeError('No valid input!')
 
         return prediction
 
