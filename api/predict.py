@@ -17,7 +17,7 @@ def predict_sentiment():
 
     model = init_model(model_name)(model_name, model_params)
     logger.debug(f'Input sentence: {sentence} --> {type(sentence)}')
-    print(sentence)
+
     raw_sentiment = model.predict(sentence)
     sentiment = model.postprocessing(raw_sentiment)
 
