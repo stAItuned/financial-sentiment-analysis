@@ -42,19 +42,21 @@ def get_sector(ticker):
     """
     :param ticker: (String) ticker that we want to track
     :return: (String) sector of the company
-    :return: (list) companies of the same sector
+    # :return: (list) ticker of the companies of the same sector
+    # :return: (list) name of the companies of the same sector
     """
 
     # because of streamlit we're on the main director
-    df = pd.read_csv('resources/dictionaries/SP500-Sectors.csv').set_index('Symbol')
+    df = pd.read_csv('resources/dictionaries/S&P-Sectors.csv').set_index('Symbol')
 
     sector = df.loc[ticker]['GICS Sector']
-    similar_companies = list(df[df['GICS Sector'] == sector].index)
+    # similar_tickers = list(df[df['GICS Sector'] == sector].index)
+    # similar_companies = list(df[df['Security'] == sector].index)
 
-    return sector, similar_companies
+    return sector, df
 
 
-def plot_sector_companies(ticker, date, other_companies):
+def plot_sector_companies(ticker, date, other_companies, mapping):
     """
     :param ticker: (String) ticker that we want to track
     :param date: (date) initial date of the comparison
@@ -68,7 +70,8 @@ def plot_sector_companies(ticker, date, other_companies):
     fig.add_trace(go.Scatter(x=main_history.index, y=main_history['Adj Close'], name=ticker))
 
     for company in other_companies:
-        curr_history = get_data(company, date)
-        fig.add_trace(go.Scatter(x=curr_history.index, y=curr_history['Adj Close'], name=company))
+        ticker = mapping[mapping['Security'] == company].index[0]
+        curr_history = get_data(ticker, date)
+        fig.add_trace(go.Scatter(x=curr_history.index, y=curr_history['Adj Close'], name=f"{ticker} - {company}"))
 
     return fig
