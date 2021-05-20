@@ -22,3 +22,10 @@ SPACY = 'spacy'
 CONV_MODEL = 'conv_model'
 BERT_MODEL = 'bert_model'
 TRANSFOMER_MODEL = 'transformer_model'
+
+# RESOURCES
+TSLA_PRELOAD = 'resources/twitter_dataset/TSLA_preload'
+AAPL_PRELOAD = 'resources/yahoo_dataset/AAPL-news-cleaned_preload'
+
+TSLA_SENTIMENT = 'resources/twitter_dataset/TSLA_sentiment'
+AAPL_SENTIMENT = 'resources/yahoo_dataset/AAPL-news-cleaned_sentiment'

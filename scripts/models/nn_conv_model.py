@@ -45,6 +45,7 @@ class ConvModel(NetworkModel):
 
             # loss = self.loss(out, y.float())
             loss = self.loss(out, y.long())
+            self.optimizer.zero_grad()
             loss.backward()
             self.optimizer.step()
 

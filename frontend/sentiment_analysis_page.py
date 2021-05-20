@@ -1,55 +1,96 @@
+import json
+from functools import lru_cache
+
 import streamlit as st
+import requests
 
-from constants.config import TWITTER_DATASET, YAHOO_DATASET, VADER
-from scripts.pipelines.training_pipeline_unsupervised import model_training
-
+from constants.config import TWITTER_DATASET, YAHOO_DATASET, VADER, TRANSFOMER_MODEL, TSLA_SENTIMENT, AAPL_SENTIMENT, TSLA_PRELOAD, AAPL_PRELOAD
+from core.file_manager.loadings import pickle_load
+from core.file_manager.os_utils import exists
+from core.file_manager.savings import pickle_save
+from scripts.pipelines.preprocessing_pipeline import preprocessing_pipeline
 from core.utils.plots_sentiment_analysis import plot_piechart, plot_most_frequent, \
     plot_length_distributionsV2, plot_informative_table
 
 container_1 = st.beta_container()
 container_2 = st.beta_container()
 
+ENDPOINT = 'http://localhost:8080/predict/sentiment'
+
+
+def generate_twitter_data():
+    data_params_twitter = {'data_path': 'resources/twitter_dataset/TSLA.csv',
+                           'dataset_type': TWITTER_DATASET,
+                           'preprocessed': False,
+                           'vectorization': None,
+                           'vector_params': None,
+                           'imbalance': None,
+                           'imb_params': None,
+                           'shuffle': False,
+                           'train': False}
+
+    x_twitter, _, _, _ = preprocessing_pipeline(data_params_twitter)
+
+    return x_twitter
+
+
+def generate_yahoo_data():
+    data_params_yahoo = {'data_path': 'resources/yahoo_dataset/AAPL-News-cleaned.csv',
+                         'dataset_type': YAHOO_DATASET,
+                         'preprocessed': False,
+                         'vectorization': None,
+                         'vector_params': None,
+                         'imbalance': None,
+                         'imb_params': None,
+                         'test_size': 0.99,
+                         'shuffle': False,
+                         'train': False}
+
+    x_yahoo, _, _, _ = preprocessing_pipeline(data_params_yahoo)
+
+    return x_yahoo
+
+
 def app():
 
-    model_name = VADER
-    seed = 2021
+    if exists(TSLA_SENTIMENT) and exists(AAPL_SENTIMENT)\
+            and exists(TSLA_PRELOAD) and exists(AAPL_PRELOAD):
+        x_twitter = pickle_load(TSLA_PRELOAD)
+        x_yahoo = pickle_load(AAPL_PRELOAD)
+        sentiment_twitter = pickle_load(TSLA_SENTIMENT)
+        sentiment_yahoo = pickle_load(AAPL_SENTIMENT)
 
-    data_params_twitter = {'data_path': 'resources/twitter_dataset/TSLA.csv',
-                   'dataset_type': TWITTER_DATASET,
-                   'preprocessed': False,
-                   'vectorization': None,
-                   'vector_params': None,
-                   'imbalance': None,
-                   'imb_params': None,
-                   'test_size': 0.99,
-                   'shuffle': False,
-                   'train': False}
+    else:
 
-    data_params_yahoo = {'data_path': 'resources/yahoo_dataset/AAPL-News-cleaned.csv',
-                   'dataset_type': YAHOO_DATASET,
-                   'preprocessed': False,
-                   'vectorization': None,
-                   'vector_params': None,
-                   'imbalance': None,
-                   'imb_params': None,
-                   'test_size': 0.99,
-                   'shuffle': False,
-                   'train': False}
+        x_twitter = generate_twitter_data()
+        x_yahoo = generate_yahoo_data()
 
-    model_params = {}
+        twitter_data = {'sentence': x_twitter.to_list(),
+                        'model': TRANSFOMER_MODEL}
 
-    _, labels_twitter, data_twitter = model_training(model_name, data_params_twitter, model_params, seed)
-    _, labels_yahoo, data_yahoo = model_training(model_name, data_params_yahoo, model_params, seed)
+        yahoo_data = {'sentence': x_yahoo.to_list(),
+                      'model': TRANSFOMER_MODEL}
+
+        response_twitter = requests.post(ENDPOINT, json=twitter_data)
+        response_yahoo = requests.post(ENDPOINT, json=yahoo_data)
+
+        sentiment_twitter = json.loads(response_twitter.content)['sentiment']
+        sentiment_yahoo = json.loads(response_yahoo.content)['sentiment']
+
+        pickle_save(x_twitter, TSLA_PRELOAD)
+        pickle_save(x_yahoo, AAPL_PRELOAD)
+        pickle_save(sentiment_twitter, TSLA_SENTIMENT)
+        pickle_save(sentiment_yahoo, AAPL_SENTIMENT)
 
     # ticker
     st.title('TESLA - TSLA')
 
     # informative table
-    st.dataframe(plot_informative_table(data_twitter,data_yahoo))
+    st.dataframe(plot_informative_table(x_twitter, x_yahoo))
 
     # pie charts
-    st.markdown("<h3> SENTIMENT ANALYSIS </h3>",unsafe_allow_html=True)
-    st.plotly_chart(plot_piechart(labels_twitter, labels_yahoo))
+    st.markdown("<h3> SENTIMENT ANALYSIS </h3>", unsafe_allow_html=True)
+    st.plotly_chart(plot_piechart(sentiment_twitter, sentiment_yahoo))
 
     # top k elements
     # st.markdown("<h3> MOST FREQUENT WORDS </h3>", unsafe_allow_html=True)
@@ -60,5 +101,4 @@ def app():
 
     # length distribution
     st.markdown("<h3> LENGTH DISTRIBUTION </h3>", unsafe_allow_html=True)
-    st.plotly_chart(plot_length_distributionsV2(data_twitter, labels_twitter, data_yahoo, labels_yahoo))
-
+    st.plotly_chart(plot_length_distributionsV2(x_twitter, sentiment_twitter, x_yahoo, sentiment_yahoo))

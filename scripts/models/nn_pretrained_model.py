@@ -44,6 +44,7 @@ class Pretrained_Bert_Model(NetworkModel):
             out = out.squeeze()
 
             loss = self.loss(out, targets.float())
+            self.optimizer.zero_grad()
             loss.backward()
             self.optimizer.step()
 
