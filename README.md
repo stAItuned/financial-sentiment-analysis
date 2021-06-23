@@ -45,5 +45,7 @@ Text Classification
 #### Authors
 
 [![Linkedin](https://img.shields.io/badge/Linkedin-Daniele%20Moltisanti-blue)](https://www.linkedin.com/in/daniele-moltisanti/)
+[![Portfolio](https://img.shields.io/badge/Portfolio-Daniele%20Moltisanti-9cf)](https://daniele21.github.io)
+
 
 [![Linkedin](https://img.shields.io/badge/Linkedin-Francesco_Di_Salvo-blue)](https://www.linkedin.com/in/francescodisalvo-pa/)
