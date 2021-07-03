@@ -14,6 +14,7 @@ SST_DATASET = 'sst_dataset'
 TWITTER_DATASET = 'twitter_data'
 YAHOO_DATASET = 'yahoo_data'
 NN_DATASET = 'nn_dataset'
+POLYGLON_DATASET = 'polyglon_data'
 
 # MODELS
 LOG_REG = 'logistic_regression'
