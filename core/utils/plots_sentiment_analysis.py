@@ -273,9 +273,9 @@ def plot_length_distributionsV2(data_t, labels_t, data_y, labels_y):
 
     return fig
 
-def plot_sentiment_trend(df, labels, ticker):
+def plot_sentiment_trend(data, labels, ticker, type_data):
     """
-    :param df: (DataFrame) news and respective dates
+    :param df: ( ) news and respective dates
     :param labels: (list) predicted sentiment
     :param ticker: (str) ticker of the stock
     :return: (Figure) comparison among sentiment and price trends
@@ -283,10 +283,12 @@ def plot_sentiment_trend(df, labels, ticker):
 
     fig = make_subplots(2, 1, row_heights=[0.7, 0.3])
 
+    df = pd.DataFrame(data)
+
     # add the labels on a new 'sentiment' column
     df['sentiment'] = labels
+
     # filter just positive and negative news
-    df_no_neutral = df[df['sentiment'] != 0].copy()
 
     # since we're showing the daily trend, we group by day
     # we count the number of positive and negative news for each day
@@ -294,16 +296,18 @@ def plot_sentiment_trend(df, labels, ticker):
     # |-- day -> feature on which we have to group
     # |-- positive -> 1 if the news is positive, 0 otherwise
     # |-- negative -> -1 if the news is negative, 0 otherwise
-    df_no_neutral['day'] = df_no_neutral.time.apply(lambda date: date.split(" ")[0])
-    df_no_neutral['positive'] = df_no_neutral.sentiment.apply(lambda s: 1 if s == 1 else 0)
-    df_no_neutral['negative'] = df_no_neutral.sentiment.apply(lambda s: -1 if s == -1 else 0)
-    aggregated = df_no_neutral.groupby('day').sum()[['positive', 'negative']]
+    df['day'] = df.index
+    df['positive'] = df.sentiment.apply(lambda s: 1 if s == 1 else 0)
+    df['negative'] = df.sentiment.apply(lambda s: -1 if s == -1 else 0)
 
-    # extract the stock prices according to the time interval available
-    # convert the string into dates
-    # to do : try with pandas
-    dates = [dt.datetime.strptime(date.split(".")[0], '%Y-%m-%d') for date in df_no_neutral.day]
-    data_ticker = yf.download('AAPL', start=min(dates), end=max(dates))
+    if type_data == 'TWITTER':
+        df['day'] = df['day'].apply(lambda d: d.split("T")[0])
+    else:
+        df['day'] = df['day'].apply(lambda d: d.split(" ")[0])
+
+    aggregated = df.groupby('day').sum()[['positive', 'negative']]
+
+    data_ticker = yf.download(ticker, start=aggregated.index[0], end=aggregated.index[-1])
     data_ticker_close = data_ticker['Adj Close']
 
     fig.add_trace(go.Scatter(x=data_ticker_close.index, y=data_ticker_close.values, name=ticker), 1, 1)
