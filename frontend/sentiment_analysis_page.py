@@ -10,7 +10,7 @@ from core.file_manager.os_utils import exists
 from core.file_manager.savings import pickle_save
 from scripts.pipelines.preprocessing_pipeline import preprocessing_pipeline
 from core.utils.plots_sentiment_analysis import plot_piechart, plot_most_frequent, \
-    plot_length_distributionsV2, plot_informative_table
+    plot_length_distributionsV2, plot_informative_table, plot_sentiment_trend
 
 container_1 = st.beta_container()
 container_2 = st.beta_container()
@@ -92,13 +92,16 @@ def app():
     st.markdown("<h3> SENTIMENT ANALYSIS </h3>", unsafe_allow_html=True)
     st.plotly_chart(plot_piechart(sentiment_twitter, sentiment_yahoo))
 
-    # top k elements
-    # st.markdown("<h3> MOST FREQUENT WORDS </h3>", unsafe_allow_html=True)
-    # slider_ph = st.empty()
-    # [min, max, default, step]
-    # value = slider_ph.slider("Select the number of words to show", 5, 15, 10, 1)
-    # st.plotly_chart(plot_most_frequent(data, data, value))
+    # sentiment trend
+    st.markdown("<h3> SENTIMENT TREND - TWITTER</h3>", unsafe_allow_html=True)
+    st.plotly_chart(plot_sentiment_trend(x_twitter, sentiment_twitter, 'AAPL', 'TWITTER'))
+
+    # sentiment trend
+    st.markdown("<h3> SENTIMENT TREND - YAHOO </h3>", unsafe_allow_html=True)
+    st.plotly_chart(plot_sentiment_trend(x_yahoo, sentiment_yahoo, 'AAPL', 'YAHOO'))
+
+
 
     # length distribution
-    st.markdown("<h3> LENGTH DISTRIBUTION </h3>", unsafe_allow_html=True)
-    st.plotly_chart(plot_length_distributionsV2(x_twitter, sentiment_twitter, x_yahoo, sentiment_yahoo))
+    # st.markdown("<h3> LENGTH DISTRIBUTION </h3>", unsafe_allow_html=True)
+    # st.plotly_chart(plot_length_distributionsV2(x_twitter, sentiment_twitter, x_yahoo, sentiment_yahoo))
