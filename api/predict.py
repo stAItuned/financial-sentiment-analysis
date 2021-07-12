@@ -11,8 +11,10 @@ logger = logging.getLogger()
 @app.route('/predict/sentiment', methods=['POST'])
 def predict_sentiment():
     data = request.json
+
     sentence = data['sentence']
     model_name = data['model']
+
     model_params = data.get('params')
 
     model = init_model(model_name)(model_name, model_params)

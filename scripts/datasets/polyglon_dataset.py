@@ -1,7 +1,17 @@
-from ..data.extraction import extract_dataset
-from ..data.preprocessing import data_preprocessing
-from ..datasets.dataset import MyDataset
+from typing import Text
+
+from core.utils.polyglon_news import get_news
+from scripts.data.extraction import extract_dataset
+from scripts.data.preprocessing import data_preprocessing
+from scripts.datasets.dataset import MyDataset
 import numpy as np
+
+
+def load_polyglon_data(folder_path: Text):
+    if exists:
+        pass
+    else:
+        get_news()
 
 
 class PolyglonDataset(MyDataset):
@@ -9,7 +19,7 @@ class PolyglonDataset(MyDataset):
         super().__init__(filepath)
 
     def load_data(self, filepath):
-        return extract_dataset(filepath)
+        return load_polyglon_data(filepath)
 
     def get_x(self, data=None):
         return data['text'] if data is not None else self.data['text']
