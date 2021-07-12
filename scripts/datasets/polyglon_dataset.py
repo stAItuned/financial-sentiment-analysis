@@ -6,12 +6,20 @@ from scripts.data.preprocessing import data_preprocessing
 from scripts.datasets.dataset import MyDataset
 import numpy as np
 
+import datetime
 
-def load_polyglon_data(folder_path: Text):
-    if exists:
-        pass
-    else:
-        get_news()
+import os
+
+
+def load_polyglon_data(ticker, window):
+    today = str(datetime.today()).split(" ")[0]
+    path = f'news/{ticker}-{today}_{window}.csv'
+
+    # if the dataset is not available, scrape it
+    if not os.path.exists(path):
+        get_news(ticker, window)
+
+    return extract_dataset(path)
 
 
 class PolyglonDataset(MyDataset):
