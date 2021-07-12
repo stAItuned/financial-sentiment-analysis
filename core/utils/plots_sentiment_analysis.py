@@ -105,7 +105,7 @@ def plot_piechart(labels_twitter, labels_yahoo):
     #colors_twitter = ['#03045e', '#00b4d8', '#caf0f8']
     #colors_yahoo = ['#480ca8', '#7209b7', '#f72585']
 
-    fig = make_subplots(rows=1, cols=2,
+    fig = make_subplots(rows=1, cols=1,
                         specs=[[{'type':'domain'}, {'type':'domain'}]],
                         subplot_titles=("Twitter", "Yahoo"))
 
@@ -131,18 +131,17 @@ def plot_piechart(labels_twitter, labels_yahoo):
     return fig
 
 
-def plot_informative_table(data_twitter, data_yahoo):
+def plot_informative_table(data):
 
     # get minimum and maximum date
-    dates_twitter = [dt.datetime.strptime(date.split(".")[0], '%Y-%m-%dT%H:%M:%S').strftime("%Y-%m-%d %H:%M:%S") for date in data_twitter.index]
-    dates_yahoo = [dt.datetime.strptime(date.split("Z")[0], '%Y-%m-%d %H:%M:%S').strftime("%Y-%m-%d %H:%M:%S") for date in data_yahoo.index]
+    dates = [dt.datetime.strptime(date.split(".")[0], '%Y-%m-%dT%H:%M:%S').strftime("%Y-%m-%d %H:%M:%S") for date in data.index]
 
-    n_samples = [len(data_twitter), len(data_yahoo)]
-    min_dates =  [min(dates_twitter), min(dates_yahoo)]
-    max_dates = [max(dates_twitter), max(dates_yahoo)]
+    n_samples = [len(data)]
+    min_dates = [min(dates)]
+    max_dates = [max(dates)]
 
     df = pd.DataFrame({ 'Number of samples' : n_samples, 'From' : min_dates, 'To' : max_dates})
-    df = df.set_index([pd.Index(['Twitter','Yahoo'])])
+    df = df.set_index([pd.Index(['Polyglon'])])
 
     return df
 
