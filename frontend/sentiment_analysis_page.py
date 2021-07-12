@@ -18,7 +18,7 @@ container_2 = st.beta_container()
 ENDPOINT = 'http://localhost:8080/predict/sentiment'
 
 
-def generate_poliglon_data():
+def generate_polyglon_data():
     data_params_polyglon = {'data_path': 'news/',
                             'dataset_type': POLYGLON_DATASET,
                             'preprocessed': True,
@@ -39,7 +39,7 @@ def app():
     #
     # else:
 
-    x_data = generate_poliglon_data()
+    x_data = generate_polyglon_data()
 
     data = {'sentence': x_data.to_list(),
             'model': TRANSFOMER_MODEL}
@@ -54,14 +54,14 @@ def app():
     # pickle_save(sentiment_yahoo, AAPL_SENTIMENT)
 
     # ticker
-    st.title('TESLA - TSLA')
+    st.title(' ** TICKER ** ')
 
     # informative table
-    st.dataframe(plot_informative_table(x_data, x_data))
+    st.dataframe(plot_informative_table(x_data))
 
     # pie charts
     st.markdown("<h3> SENTIMENT ANALYSIS </h3>", unsafe_allow_html=True)
-    st.plotly_chart(plot_piechart(sentiment, sentiment))
+    st.plotly_chart(plot_piechart(sentiment))
 
     # sentiment trend
     st.markdown("<h3> SENTIMENT TREND - DATA </h3>", unsafe_allow_html=True)
