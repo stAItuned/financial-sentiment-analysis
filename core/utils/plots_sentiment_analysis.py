@@ -92,37 +92,25 @@ def unpackSeries(x):
     """
     return x.index, x.values
 
-def plot_piechart(labels_twitter, labels_yahoo):
+def plot_piechart(labels):
     """
-    :param labels_twitter: (series) --> twitter sentiment
-    :param labels_yahoo:   (series) --> yahoo sentiment
-
+    :param labels: (series) --> sentiment labels
     :return: (plt)
     """
-    dic_sentiment_twitter = get_dic_sentiment(labels_twitter)
-    dic_sentiment_yahoo = get_dic_sentiment(labels_yahoo)
+    dic_sentiment = get_dic_sentiment(labels)
 
-    #colors_twitter = ['#03045e', '#00b4d8', '#caf0f8']
     #colors_yahoo = ['#480ca8', '#7209b7', '#f72585']
 
     fig = make_subplots(rows=1, cols=1,
-                        specs=[[{'type':'domain'}, {'type':'domain'}]],
-                        subplot_titles=("Twitter", "Yahoo"))
+                        specs=[[{'type':'domain'}]],
+                        subplot_titles=("POLYGLON"))
 
-    fig.add_trace(go.Pie(labels=list(dic_sentiment_twitter.keys()),
-                         values=list(dic_sentiment_twitter.values()),
-                         name="TWITTER",
+    fig.add_trace(go.Pie(labels=list(dic_sentiment.keys()),
+                         values=list(dic_sentiment.values()),
+                         name="POLYGLON",
                          #marker_colors=colors_twitter,
                          ),
                   1, 1)
-
-    fig.add_trace(go.Pie(labels=list(dic_sentiment_yahoo.keys()),
-                         values=list(dic_sentiment_yahoo.values()),
-                         name="YAHOO",
-                         #marker_colors=colors_yahoo
-                         ),
-
-                  1, 2)
 
     fig.update_traces(hoverinfo='label+percent+name')
     fig.update(#layout_title_text='SENTIMENT ANALYSIS',
@@ -132,7 +120,10 @@ def plot_piechart(labels_twitter, labels_yahoo):
 
 
 def plot_informative_table(data):
-
+    """
+    :param data: (Series) --> dates of the news
+    :return:
+    """
     # get minimum and maximum date
     dates = [dt.datetime.strptime(date.split(".")[0], '%Y-%m-%dT%H:%M:%S').strftime("%Y-%m-%d %H:%M:%S") for date in data.index]
 
