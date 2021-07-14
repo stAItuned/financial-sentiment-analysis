@@ -3,13 +3,10 @@ import torch
 import numpy as np
 import tensorflow_datasets as tfds
 
-from core.utils.range import scale_range
 from scripts.data.preprocessing import data_preprocessing
 from scripts.datasets.dataset import MyDataset, NN_Dataset
 from transformers import BertTokenizer
 import pandas as pd
-
-from scripts.networks.pretrained_bert import PRE_TRAINED_MODEL_NAME
 
 MAX_LEN = 100
 
