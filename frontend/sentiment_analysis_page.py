@@ -20,8 +20,10 @@ ENDPOINT = 'http://localhost:8080/predict/sentiment'
 
 def generate_polyglon_data():
     data_params_polyglon = {'data_path': 'news/',
+                            'train' : True,
                             'dataset_type': POLYGLON_DATASET,
                             'preprocessed': True,
+                            'ticker' : 'AAPL',
                             'shuffle': False}
 
     x_polyglon, _, _, _ = preprocessing_pipeline(data_params_polyglon)
@@ -57,7 +59,7 @@ def app():
     st.title(' ** TICKER ** ')
 
     # informative table
-    st.dataframe(plot_informative_table(x_data))
+    #st.dataframe(plot_informative_table(x_data))
 
     # pie charts
     st.markdown("<h3> SENTIMENT ANALYSIS </h3>", unsafe_allow_html=True)
