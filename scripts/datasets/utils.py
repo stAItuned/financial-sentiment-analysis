@@ -1,11 +1,12 @@
 from typing import Text, Dict
 
-from constants.config import MOVIE_DATASET, FINANCIAL_DATASET, TWITTER_DATASET, SST_DATASET, YAHOO_DATASET, NN_DATASET
+from constants.config import POLYGLON_DATASET, TWITTER_DATASET, SST_DATASET, YAHOO_DATASET, NN_DATASET
 from core.decorators.time_decorator import timing
 from scripts.datasets.dataset import NN_Dataset
 from scripts.datasets.sst_dataset import SSTDataset
 from scripts.datasets.twitter_dataset import TwitterDataset
 from scripts.datasets.yahoo_dataset import YahooDataset
+from scripts.datasets.polyglon_dataset import PolyglonDataset
 
 
 def init_dataset(dataset_type: Text):
@@ -18,6 +19,8 @@ def init_dataset(dataset_type: Text):
         return YahooDataset
     elif dataset_type == NN_DATASET:
         return NN_Dataset
+    elif dataset_type == POLYGLON_DATASET:
+        return PolyglonDataset
     else:
         raise AttributeError(f'Dataset type not found: {dataset_type}')
 
@@ -26,8 +29,13 @@ def init_dataset(dataset_type: Text):
 def dataset_generation(params: Dict):
     data_path = params['data_path']
     dataset_type = params['dataset_type']
+    ticker = params['ticker']
 
     dataset_class = init_dataset(dataset_type)
-    dataset = dataset_class(data_path)
+
+    if dataset_type == POLYGLON_DATASET:
+        dataset = dataset_class(data_path, ticker)
+    else:
+        dataset = dataset_class(data_path)
 
     return dataset
