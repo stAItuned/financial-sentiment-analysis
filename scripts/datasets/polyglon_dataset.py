@@ -6,14 +6,15 @@ from scripts.data.preprocessing import data_preprocessing
 from scripts.datasets.dataset import MyDataset
 import numpy as np
 
-import datetime
+from datetime import datetime
 
 import os
 
 
-def load_polyglon_data(ticker, window):
-    today = str(datetime.today()).split(" ")[0]
-    path = f'news/{ticker}-{today}_{window}.csv'
+def load_polyglon_data(ticker, window=14):
+    date = str(datetime.today()).split(" ")[0]
+    path = f'news/{ticker}-{date}_{window}.csv'
+
 
     # if the dataset is not available, scrape it
     if not os.path.exists(path):
@@ -23,13 +24,16 @@ def load_polyglon_data(ticker, window):
 
 
 class PolyglonDataset(MyDataset):
-    def __init__(self, filepath):
+    def __init__(self, filepath, ticker):
+        self.ticker = ticker
         super().__init__(filepath)
 
+
     def load_data(self, filepath):
-        return load_polyglon_data(filepath)
+        return load_polyglon_data(self.ticker)
 
     def get_x(self, data=None):
+        print(data)
         return data['text'] if data is not None else self.data['text']
 
     def get_y(self, data=None):
