@@ -12,7 +12,6 @@ def get_news(ticker, window=14):
     start_date_str = str(start_date).split(" ")[0]
 
 
-    # with open('../../files/api_key_polyglon.txt') as f:
     with open('files/api_key_polyglon.txt') as f:
         api_key = f.read()
 
@@ -30,8 +29,6 @@ def get_news(ticker, window=14):
 
     last_date = dates[0].split("T")[0]
 
-    # output_path = f"../../news/{ticker}-{first_date}_{last_date}.csv"
-    # output_path = f"../../news/{ticker}-{last_date}_{window}.csv"
     output_path = f"news/{ticker}-{last_date}_{window}.csv"
 
     pd.DataFrame({'text':headlines, 'date':dates}).to_csv(output_path)
