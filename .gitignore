@@ -8,3 +8,5 @@ venv
 
 notebooks/.ipynb_checkpoints
 *.DS_Store
+
+news/*
