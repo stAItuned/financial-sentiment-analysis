@@ -30,4 +30,4 @@ def get_news(ticker, window=14):
 
     output_path = f"news/{ticker}-{str(today).split(' ')[0]}_{window}.csv"
 
-    pd.DataFrame({'text':headlines, 'date':dates}).to_csv(output_path)
+    pd.DataFrame({'text':headlines, 'date':dates}).set_index('date').to_csv(output_path)
