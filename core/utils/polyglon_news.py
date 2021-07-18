@@ -8,7 +8,8 @@ def get_news(ticker, window=14):
     :param ticker: (str) ticker of the stock
     :param window: (int) window for the news (7 days, 14 days ..)
     """
-    start_date = datetime.today() - timedelta(days=14)
+    today = datetime.today()
+    start_date = today - timedelta(days=14)
     start_date_str = str(start_date).split(" ")[0]
 
 
@@ -27,8 +28,6 @@ def get_news(ticker, window=14):
 
     # preprocessing here (?)
 
-    last_date = dates[0].split("T")[0]
-
-    output_path = f"news/{ticker}-{last_date}_{window}.csv"
+    output_path = f"news/{ticker}-{str(today).split(' ')[0]}_{window}.csv"
 
     pd.DataFrame({'text':headlines, 'date':dates}).to_csv(output_path)
