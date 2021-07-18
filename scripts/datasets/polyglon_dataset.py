@@ -15,8 +15,7 @@ def load_polyglon_data(ticker, window=14):
     date = str(datetime.today()).split(" ")[0]
     path = f'news/{ticker}-{date}_{window}.csv'
 
-
-    # if the dataset is not available, scrape it
+    # if the dataset is not already present, scrape it
     if not os.path.exists(path):
         get_news(ticker, window)
 
