@@ -1,30 +1,25 @@
 import json
-from functools import lru_cache
-
 import streamlit as st
 import requests
 import os
 import random
-
 from datetime import datetime
 
-from constants.config import TWITTER_DATASET, YAHOO_DATASET, VADER, TRANSFOMER_MODEL, TSLA_SENTIMENT, AAPL_SENTIMENT, \
-    TSLA_PRELOAD, AAPL_PRELOAD, POLYGLON_DATASET
-from core.file_manager.loadings import pickle_load
-from core.file_manager.os_utils import exists
-from core.file_manager.savings import pickle_save
+from constants.config import TRANSFOMER_MODEL, POLYGLON_DATASET
+
 from scripts.pipelines.preprocessing_pipeline import preprocessing_pipeline
 from core.utils.plots_sentiment_analysis import plot_piechart, plot_informative_table, plot_sentiment_trend
-
 from core.utils.financial_data_utils import *
 
-container_1 = st.beta_container()
-container_2 = st.beta_container()
+# setup page
+container_ticker = st.beta_container()
+container_prediction = st.beta_container()
+container_charts = st.beta_container()
 
+# endpoint for making the sentiment analysis
 ENDPOINT = 'http://localhost:8080/predict/sentiment'
 
 
-@lru_cache()
 def generate_polyglon_data():
     data_params_polyglon = {'data_path': 'news/scraped/',
                             'train' : True,
@@ -38,59 +33,53 @@ def generate_polyglon_data():
     return x_polyglon
 
 
-st.title('Financial Sentiment Analysis')
-
-############################################
 # SELECT TICKER
-############################################
-slider_obj = st.empty()
-other_companies = get_ticker_list()
-random_integer = random.randint(0, len(other_companies)-1)
-input_company = st.selectbox('Select ticker',
-                             other_companies['Security'], 0)
+with container_ticker:
 
-input_ticker = other_companies[other_companies['Security'] == input_company].index[0]
+    st.title('Financial Sentiment Analysis')
 
-# if exists(TSLA_SENTIMENT) and exists(AAPL_SENTIMENT)\
-#         and exists(TSLA_PRELOAD) and exists(AAPL_PRELOAD):
-#     x_twitter = pickle_load(TSLA_PRELOAD)
-#     x_yahoo = pickle_load(AAPL_PRELOAD)
-#     sentiment_twitter = pickle_load(TSLA_SENTIMENT)
-#     sentiment_yahoo = pickle_load(AAPL_SENTIMENT)
-#
-# else:
+    slider_obj = st.empty()
+    other_companies = get_ticker_list()
+    random_integer = random.randint(0, len(other_companies)-1)
+    input_company = st.selectbox('Select ticker',other_companies['Security'], 0)
 
-############################################
+    input_ticker = other_companies[other_companies['Security'] == input_company].index[0]
+
+
 # NEWS AND PREDICTION
-############################################
-PATH_DATA = f"news/scraped/{input_ticker}-{str(datetime.today()).split(' ')[0]}_{14}.csv"
-PATH_PREDICTION = f"news/prediction/{input_ticker}-{str(datetime.today()).split(' ')[0]}_{14}.csv"
+with container_prediction:
 
-if os.path.exists(PATH_PREDICTION):
-    x_data = pd.read_csv(PATH_PREDICTION).set_index('date')
-    sentiment = x_data['sentiment'].to_list()
+    PATH_DATA = f"news/scraped/{input_ticker}-{str(datetime.today()).split(' ')[0]}_{14}.csv"
+    PATH_PREDICTION = f"news/prediction/{input_ticker}-{str(datetime.today()).split(' ')[0]}_{14}.csv"
 
-else:
-    x_news = generate_polyglon_data()
+    if os.path.exists(PATH_PREDICTION):
+        x_data = pd.read_csv(PATH_PREDICTION).set_index('date')
+        sentiment = x_data['sentiment'].to_list()
 
-    data = {'sentence': x_news.to_list(),
-            'model': TRANSFOMER_MODEL}
+    else:
+        x_news = generate_polyglon_data()
 
-    response = requests.post(ENDPOINT, json=data)
-    sentiment = json.loads(response.content)['sentiment']
+        data = {'sentence': x_news.to_list(),
+                'model': TRANSFOMER_MODEL}
 
-    x_data = pd.DataFrame({'data':x_news, 'sentiment':sentiment})
-    x_data.to_csv(PATH_PREDICTION)
+        response = requests.post(ENDPOINT, json=data)
+        sentiment = json.loads(response.content)['sentiment']
 
-# informative table
-st.markdown(f"<h3> SHORT SUMMARY - {input_ticker}</h3>", unsafe_allow_html=True)
-st.dataframe(plot_informative_table(x_data))
+        x_data = pd.DataFrame({'data':x_news, 'sentiment':sentiment})
+        x_data.to_csv(PATH_PREDICTION)
 
-# pie charts
-st.markdown(f"<h3> SENTIMENT ANALYSIS - {input_ticker}</h3>", unsafe_allow_html=True)
-st.plotly_chart(plot_piechart(sentiment))
 
-# sentiment trend
-st.markdown(f"<h3> SENTIMENT TREND - {input_ticker}</h3>", unsafe_allow_html=True)
+with container_charts:
 
-st.plotly_chart(plot_sentiment_trend(x_data, input_ticker))
+    # informative table
+    st.markdown(f"<h3> SHORT SUMMARY - {input_ticker}</h3>", unsafe_allow_html=True)
+    st.dataframe(plot_informative_table(x_data))
+
+    # pie chart
+    st.markdown(f"<h3> SENTIMENT ANALYSIS - {input_ticker}</h3>", unsafe_allow_html=True)
+    st.plotly_chart(plot_piechart(sentiment))
+
+    # sentiment trend
+    st.markdown(f"<h3> SENTIMENT TREND - {input_ticker}</h3>", unsafe_allow_html=True)
+
+    st.plotly_chart(plot_sentiment_trend(x_data, input_ticker))
