@@ -125,11 +125,11 @@ def plot_informative_table(data):
     :return:
     """
     # get minimum and maximum date
-    dates = [dt.datetime.strptime(date.split(".")[0], '%Y-%m-%dT%H:%M:%S').strftime("%Y-%m-%d %H:%M:%S") for date in data.index]
+    dates = [dt.datetime.strptime(date.split("T")[0], '%Y-%m-%d') for date in data.index]
 
     n_samples = [len(data)]
-    min_dates = [min(dates)]
-    max_dates = [max(dates)]
+    min_dates = [str(min(dates)).split(" ")[0]]
+    max_dates = [str(max(dates)).split(" ")[0]]
 
     df = pd.DataFrame({ 'Number of samples' : n_samples, 'From' : min_dates, 'To' : max_dates})
     df = df.set_index([pd.Index(['Polyglon'])])
