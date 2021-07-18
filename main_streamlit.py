@@ -69,6 +69,7 @@ PATH_PREDICTION = f"news/prediction/{input_ticker}-{str(datetime.today()).split(
 if os.path.exists(PATH_PREDICTION):
     x_data = pd.read_csv(PATH_PREDICTION).set_index('date')
     sentiment = x_data['sentiment'].to_list()
+    x_data.drop(columns=['sentiment'], inplace=True)
 
 else:
     x_data = generate_polyglon_data()
