@@ -28,6 +28,6 @@ def get_news(ticker, window=14):
 
     # preprocessing here (?)
 
-    output_path = f"news/{ticker}-{str(today).split(' ')[0]}_{window}.csv"
+    output_path = f"news/scraped/{ticker}-{str(today).split(' ')[0]}_{window}.csv"
 
     pd.DataFrame({'text':headlines, 'date':dates}).set_index('date').to_csv(output_path)
