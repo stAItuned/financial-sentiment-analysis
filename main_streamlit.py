@@ -83,6 +83,7 @@ else:
     x_data.to_csv(PATH_PREDICTION)
 
 # informative table
+st.markdown(f"<h3> SHORT SUMMARY - {input_ticker}</h3>", unsafe_allow_html=True)
 st.dataframe(plot_informative_table(x_data))
 
 # pie charts
