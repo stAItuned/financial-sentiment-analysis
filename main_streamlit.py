@@ -69,18 +69,18 @@ PATH_PREDICTION = f"news/prediction/{input_ticker}-{str(datetime.today()).split(
 if os.path.exists(PATH_PREDICTION):
     x_data = pd.read_csv(PATH_PREDICTION).set_index('date')
     sentiment = x_data['sentiment'].to_list()
-    x_data.drop(columns=['sentiment'], inplace=True)
 
 else:
-    x_data = generate_polyglon_data()
+    x_news = generate_polyglon_data()
 
-    data = {'sentence': x_data.to_list(),
+    data = {'sentence': x_news.to_list(),
             'model': TRANSFOMER_MODEL}
 
     response = requests.post(ENDPOINT, json=data)
     sentiment = json.loads(response.content)['sentiment']
 
-    pd.DataFrame({'data' : x_data, 'sentiment' : sentiment}).to_csv(PATH_PREDICTION)
+    x_data = pd.DataFrame({'data':x_news, 'sentiment':sentiment})
+    x_data.to_csv(PATH_PREDICTION)
 
 # informative table
 st.dataframe(plot_informative_table(x_data))
@@ -91,4 +91,5 @@ st.plotly_chart(plot_piechart(sentiment))
 
 # sentiment trend
 st.markdown(f"<h3> SENTIMENT TREND - {input_ticker}</h3>", unsafe_allow_html=True)
-st.plotly_chart(plot_sentiment_trend(x_data, sentiment, input_ticker, 'TWITTER'))
+
+st.plotly_chart(plot_sentiment_trend(x_data, input_ticker))
