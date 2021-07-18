@@ -27,7 +27,7 @@ def generate_polyglon_data():
                             'train' : True,
                             'dataset_type': POLYGLON_DATASET,
                             'preprocessed': True,
-                            'ticker' : 'AAPL',
+                            'ticker' : input_ticker,
                             'shuffle': False}
 
     x_polyglon, _, _, _ = preprocessing_pipeline(data_params_polyglon)
