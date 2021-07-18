@@ -12,10 +12,9 @@ import numpy as np
 import pandas as pd
 
 import datetime as dt
-
+import time
+import datetime
 import streamlit as st
-
-import yfinance as yf
 
 
 def getOrderedDictionary(data):
@@ -263,7 +262,7 @@ def plot_length_distributionsV2(data_t, labels_t, data_y, labels_y):
 
     return fig
 
-def plot_sentiment_trend(data, labels, ticker, type_data):
+def plot_sentiment_trend(data, ticker):
     """
     :param df: ( ) news and respective dates
     :param labels: (list) predicted sentiment
@@ -273,10 +272,7 @@ def plot_sentiment_trend(data, labels, ticker, type_data):
 
     fig = make_subplots(2, 1, row_heights=[0.7, 0.3])
 
-    df = pd.DataFrame(data)
-
-    # add the labels on a new 'sentiment' column
-    df['sentiment'] = labels
+    df = data.copy()
 
     # filter just positive and negative news
 
@@ -290,15 +286,19 @@ def plot_sentiment_trend(data, labels, ticker, type_data):
     df['positive'] = df.sentiment.apply(lambda s: 1 if s == 1 else 0)
     df['negative'] = df.sentiment.apply(lambda s: -1 if s == -1 else 0)
 
-    if type_data == 'TWITTER':
-        df['day'] = df['day'].apply(lambda d: d.split("T")[0])
-    else:
-        df['day'] = df['day'].apply(lambda d: d.split(" ")[0])
+    df['day'] = df['day'].apply(lambda d: d.split("T")[0])
 
     aggregated = df.groupby('day').sum()[['positive', 'negative']]
 
-    data_ticker = yf.download(ticker, start=aggregated.index[0], end=aggregated.index[-1])
-    data_ticker_close = data_ticker['Adj Close']
+    start_date = aggregated.index[0]
+    end_date = aggregated.index[-1]
+
+    start = int(time.mktime(datetime.datetime.strptime("2021-07-06", '%Y-%m-%d').timetuple()))
+    end = int(time.mktime(datetime.datetime.strptime("2021-07-16", '%Y-%m-%d').timetuple()))
+    interval = '1d'
+
+    query_string = f'https://query1.finance.yahoo.com/v7/finance/download/{ticker}?period1={start}&period2={end}&interval={interval}&events=history&includeAdjustedClose=true'
+    data_ticker_close = pd.read_csv(query_string).set_index('Date')['Adj Close']
 
     fig.add_trace(go.Scatter(x=data_ticker_close.index, y=data_ticker_close.values, name=ticker), 1, 1)
 
