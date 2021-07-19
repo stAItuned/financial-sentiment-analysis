@@ -111,7 +111,7 @@ def plot_piechart(labels):
                          ),
                   1, 1)
 
-    fig.update_traces(hoverinfo='label+percent+name')
+    fig.update_traces(hoverinfo='label+percent')
     fig.update(#layout_title_text='SENTIMENT ANALYSIS',
                layout_showlegend=True)
 
