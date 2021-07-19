@@ -48,19 +48,19 @@ def get_dic_sentiment(labels):
     dic_sentiment = dict(Counter(labels))
 
     if -1 in dic_sentiment:
-        dic_sentiment["negative"] = dic_sentiment.pop(-1)
+        dic_sentiment["Negative"] = dic_sentiment.pop(-1)
     else:
-        dic_sentiment["negative"] = 0
+        dic_sentiment["Negative"] = 0
 
     if 0 in dic_sentiment:
-        dic_sentiment["neutral"] = dic_sentiment.pop(0)
+        dic_sentiment["Neutral"] = dic_sentiment.pop(0)
     else:
-        dic_sentiment["neutral"] = 0
+        dic_sentiment["Neutral"] = 0
 
     if 1 in dic_sentiment:
-        dic_sentiment["positive"] = dic_sentiment.pop(1)
+        dic_sentiment["Positive"] = dic_sentiment.pop(1)
     else:
-        dic_sentiment["positive"] = 0
+        dic_sentiment["Positive"] = 0
 
     return dic_sentiment
 
@@ -98,7 +98,8 @@ def plot_piechart(labels):
     """
     dic_sentiment = get_dic_sentiment(labels)
 
-    #colors_yahoo = ['#480ca8', '#7209b7', '#f72585']
+    # negative, neutral and positive
+    colors = ['#FF4E11', '#FAB733', '#69B34C']
 
     fig = make_subplots(rows=1, cols=1,
                         specs=[[{'type':'domain'}]],
@@ -106,8 +107,7 @@ def plot_piechart(labels):
 
     fig.add_trace(go.Pie(labels=list(dic_sentiment.keys()),
                          values=list(dic_sentiment.values()),
-                         name="POLYGLON",
-                         #marker_colors=colors_twitter,
+                         marker_colors=colors,
                          ),
                   1, 1)
 
