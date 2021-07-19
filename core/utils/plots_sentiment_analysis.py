@@ -290,20 +290,21 @@ def plot_sentiment_trend(data, ticker):
 
     aggregated = df.groupby('day').sum()[['Positive', 'Negative']]
 
-    start_date = aggregated.index[0]
-    end_date = aggregated.index[-1]
-
     start = int(time.mktime(datetime.datetime.strptime("2021-07-06", '%Y-%m-%d').timetuple()))
     end = int(time.mktime(datetime.datetime.strptime("2021-07-16", '%Y-%m-%d').timetuple()))
     interval = '1d'
 
     query_string = f'https://query1.finance.yahoo.com/v7/finance/download/{ticker}?period1={start}&period2={end}&interval={interval}&events=history&includeAdjustedClose=true'
-    data_ticker_close = pd.read_csv(query_string).set_index('Date')['Adj Close']
+    data_ticker_close = pd.read_csv(query_string).set_index('Date')[['Adj Close']]
 
-    fig.add_trace(go.Scatter(x=data_ticker_close.index, y=data_ticker_close.values, name=ticker, marker_color="#5578B8"), 1, 1)
+    # in order to avoid mismatches among the stock prices and the sentiment trends it is suggested to compute
+    # the left join. Notice that we may have days without news.
+    # these days will be considered NaN for the left join, then, fill them with 0
+    complete_table = data_ticker_close.join(aggregated).fillna(0)
+    fig.add_trace(go.Scatter(x=complete_table.index, y=complete_table['Adj Close'], name=ticker, marker_color="#5578B8"), 1, 1)
 
-    fig.add_trace(go.Bar(x=aggregated.index, y=aggregated.Positive, marker_color='#69B34C', name="Positive"), 2, 1)
-    fig.add_trace(go.Bar(x=aggregated.index, y=aggregated.Negative, marker_color='#FF4E11', name="Negative"), 2, 1)
+    fig.add_trace(go.Bar(x=complete_table.index, y=complete_table.Positive, marker_color='#69B34C', name="Positive"), 2, 1)
+    fig.add_trace(go.Bar(x=complete_table.index, y=complete_table.Negative, marker_color='#FF4E11', name="Negative"), 2, 1)
     fig.update_layout(barmode='relative', title_text=ticker)
 
     return fig
