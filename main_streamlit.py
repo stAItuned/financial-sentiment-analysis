@@ -39,8 +39,7 @@ def generate_polyglon_data():
 with container_info:
     st.title('Financial Sentiment Analysis')
 
-    st.markdown("The goal of the project is to perform a Sentiment Analysis on near-real-time financial news and to compare them with the historical stock prices. "
-                "The number of extracted news may vary from stock to stock, so you may encounter some very unrepresentative samples.", unsafe_allow_html=True)
+    st.markdown("The goal of the project is to perform a Sentiment Analysis on near-real-time financial news and to compare them with the historical stock prices.", unsafe_allow_html=True)
 
 
 # SELECT TICKER
