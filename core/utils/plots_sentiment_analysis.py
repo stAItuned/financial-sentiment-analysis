@@ -283,12 +283,12 @@ def plot_sentiment_trend(data, ticker):
     # |-- positive -> 1 if the news is positive, 0 otherwise
     # |-- negative -> -1 if the news is negative, 0 otherwise
     df['day'] = df.index
-    df['positive'] = df.sentiment.apply(lambda s: 1 if s == 1 else 0)
-    df['negative'] = df.sentiment.apply(lambda s: -1 if s == -1 else 0)
+    df['Positive'] = df.sentiment.apply(lambda s: 1 if s == 1 else 0)
+    df['Negative'] = df.sentiment.apply(lambda s: -1 if s == -1 else 0)
 
     df['day'] = df['day'].apply(lambda d: d.split("T")[0])
 
-    aggregated = df.groupby('day').sum()[['positive', 'negative']]
+    aggregated = df.groupby('day').sum()[['Positive', 'Negative']]
 
     start_date = aggregated.index[0]
     end_date = aggregated.index[-1]
@@ -300,10 +300,10 @@ def plot_sentiment_trend(data, ticker):
     query_string = f'https://query1.finance.yahoo.com/v7/finance/download/{ticker}?period1={start}&period2={end}&interval={interval}&events=history&includeAdjustedClose=true'
     data_ticker_close = pd.read_csv(query_string).set_index('Date')['Adj Close']
 
-    fig.add_trace(go.Scatter(x=data_ticker_close.index, y=data_ticker_close.values, name=ticker), 1, 1)
+    fig.add_trace(go.Scatter(x=data_ticker_close.index, y=data_ticker_close.values, name=ticker, marker_color="#5578B8"), 1, 1)
 
-    fig.add_trace(go.Bar(x=aggregated.index, y=aggregated.positive, marker_color='green', name="positive"), 2, 1)
-    fig.add_trace(go.Bar(x=aggregated.index, y=aggregated.negative, marker_color='red', name="negative"), 2, 1)
+    fig.add_trace(go.Bar(x=aggregated.index, y=aggregated.Positive, marker_color='#69B34C', name="Positive"), 2, 1)
+    fig.add_trace(go.Bar(x=aggregated.index, y=aggregated.Negative, marker_color='#FF4E11', name="Negative"), 2, 1)
     fig.update_layout(barmode='relative', title_text=ticker)
 
     return fig
