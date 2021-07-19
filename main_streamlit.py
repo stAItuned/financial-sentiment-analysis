@@ -87,6 +87,7 @@ with container_charts:
     st.plotly_chart(plot_piechart(sentiment))
 
     # sentiment trend
-    st.markdown(f"<h3> SENTIMENT TREND - {input_ticker}</h3>", unsafe_allow_html=True)
-
+    st.markdown(f"<h3> SENTIMENT TREND AND STOCK PRICE - {input_ticker}</h3>", unsafe_allow_html=True)
+    st.markdown("Here you can compare the sentiment of the financial news with the correspondent daily stock price. Therefore, it is "
+                "possible to see if there is some sort of correlation among them.")
     st.plotly_chart(plot_sentiment_trend(x_data, input_ticker))
