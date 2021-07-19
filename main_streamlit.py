@@ -90,11 +90,3 @@ with container_charts:
     st.markdown(f"<h3> SENTIMENT TREND - {input_ticker}</h3>", unsafe_allow_html=True)
 
     st.plotly_chart(plot_sentiment_trend(x_data, input_ticker))
-
-
-with container_contancts:
-    st.markdown("<h3> CONTANCTS </h3>", unsafe_allow_html=True)
-    st.markdown("""
-        - <a href='https://github.com/daniele21'> Daniele Moltisanti </a>
-        - <a href='https://github.com/francescodisalvo05'> Francesco Di Salvo </a>
-    """, unsafe_allow_html=True)
