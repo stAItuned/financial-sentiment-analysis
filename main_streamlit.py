@@ -12,6 +12,7 @@ from core.utils.plots_sentiment_analysis import plot_piechart, plot_informative_
 from core.utils.financial_data_utils import *
 
 # setup page
+container_info = st.beta_container()
 container_ticker = st.beta_container()
 container_prediction = st.beta_container()
 container_charts = st.beta_container()
@@ -33,10 +34,16 @@ def generate_polyglon_data():
     return x_polyglon
 
 
+# INFO
+with container_info:
+    st.title('Financial Sentiment Analysis')
+
+    st.markdown("The goal of the project is to perform a Sentiment Analysis on near-real-time financial news and to compare them with the historical stock prices. "
+                "The number of extracted news may vary from stock to stock, so you may encounter some very unrepresentative samples.", unsafe_allow_html=True)
+
+
 # SELECT TICKER
 with container_ticker:
-
-    st.title('Financial Sentiment Analysis')
 
     slider_obj = st.empty()
     other_companies = get_ticker_list()
