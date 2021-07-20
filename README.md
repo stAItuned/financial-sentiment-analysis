@@ -17,9 +17,9 @@ Libraries:
 - [Dataset](#dataset)
 - [Task](#task)
 - [Solutions](#solutions)
+- [Demo](#demo)
 
 ------------------------
-
 # Description
 Development of a custom sentiment analysis model related to **financial news**
 
@@ -40,6 +40,11 @@ Text Classification
   - *CNN-LSTM Network* (**Work in progress**)
 
 ------------------------
+
+# Demo
+<p align="center">
+<img src="demo/demo.gif" />
+</p>
 
 
 #### Authors
