@@ -1,5 +1,6 @@
 from typing import Text
 
+from constants.paths import SCRAPED_NEWS_DIR
 from core.utils.polyglon_news import get_news
 from scripts.data.extraction import extract_dataset
 from scripts.data.preprocessing import data_preprocessing
@@ -13,7 +14,7 @@ import os
 
 def load_polyglon_data(ticker, window=14):
     date = str(datetime.today()).split(" ")[0]
-    path = f'news/scraped/{ticker}-{date}_{window}.csv'
+    path = f'{SCRAPED_NEWS_DIR}{ticker}-{date}_{window}.csv'
 
     # if the dataset is not already present, scrape it
     if not os.path.exists(path):
@@ -26,7 +27,6 @@ class PolyglonDataset(MyDataset):
     def __init__(self, filepath, ticker):
         self.ticker = ticker
         super().__init__(filepath)
-
 
     def load_data(self, filepath):
         return load_polyglon_data(self.ticker)

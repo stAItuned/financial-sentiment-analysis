@@ -1,19 +1,23 @@
+from typing import Text
+
 import requests
 import pandas as pd
 from datetime import datetime, timedelta
 
+from constants.paths import POLYGLON_KEY_PATH, SCRAPED_NEWS_DIR
 
-def get_news(ticker, window=14):
+
+def get_news(ticker: Text,
+             window: int = 14):
     """
     :param ticker: (str) ticker of the stock
     :param window: (int) window for the news (7 days, 14 days ..)
     """
     today = datetime.today()
-    start_date = today - timedelta(days=14)
+    start_date = today - timedelta(days=window)
     start_date_str = str(start_date).split(" ")[0]
 
-
-    with open('files/api_key_polyglon.txt') as f:
+    with open(POLYGLON_KEY_PATH) as f:
         api_key = f.read()
 
     limit = "500"
@@ -26,8 +30,7 @@ def get_news(ticker, window=14):
         headlines.append(data['results'][i]['title'])
         dates.append(data['results'][i]['published_utc'])
 
-    # preprocessing here (?)
+    output_path = f"{SCRAPED_NEWS_DIR}{ticker}-{str(today).split(' ')[0]}_{window}.csv"
 
-    output_path = f"news/scraped/{ticker}-{str(today).split(' ')[0]}_{window}.csv"
-
-    pd.DataFrame({'text':headlines, 'date':dates}).set_index('date').to_csv(output_path)
+    pd.DataFrame({'text': headlines,
+                  'date': dates}).set_index('date').to_csv(output_path)
