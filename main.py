@@ -43,14 +43,14 @@ with container_info:
 
     # st.markdown("The goal of the project is to perform a Sentiment Analysis on near-real-time financial news and to compare them with the historical stock prices.", unsafe_allow_html=True)
 
-    st.markdown("**Choose** the *ticker* from this menu items: you can select one of the ticker from "
-                "**SP500**. \n"
-                "Then, you can look at the **sentiment analysis** for the news related to that ticker, "
-                "in the period detailed in the *short summary*. "
-                "The first computing of a ticker processing requires few seconds. "
-                "Notice that the first time you select a new ticker you should wait few seconds "
+    st.markdown("**Choose** the *company* from this menu items, where you can find the all companies"
+                " from the **SP500**. "
+                "Then, you can look at the **sentiment analysis** for the news related to that company, "
+                "in the period specified in the *short summary* section. Up to now we consider a window of "
+                "at most 14 days. "
+                "Notice that just the first time you select a new company you should wait for a few seconds "
                 "for the extraction and the "
-                "prediction, otherwise you will see it because it is saved in the cache. ", unsafe_allow_html=True)
+                "prediction. ", unsafe_allow_html=True)
 
 
 # SELECT TICKER
@@ -59,7 +59,7 @@ with container_ticker:
     slider_obj = st.empty()
     other_companies = get_ticker_list()
     random_integer = random.randint(0, len(other_companies)-1)
-    input_company = st.selectbox('Select ticker',other_companies['Security'], 0)
+    input_company = st.selectbox('Select company',other_companies['Security'], 0)
 
     input_ticker = other_companies[other_companies['Security'] == input_company].index[0]
 
