@@ -27,8 +27,6 @@ cymem==2.0.5
 decorator==5.0.7
 defusedxml==0.7.1
 dill==0.3.3
-dm-finance @ file:///Users/daniele/Documents/Training/src/financial-forecasting/resources/dm_finance-0.1.0.tar.gz
-en-core-web-lg @ https://github.com/explosion/spacy-models/releases/download/en_core_web_lg-3.0.0/en_core_web_lg-3.0.0-py3-none-any.whl
 entrypoints==0.3
 fake-useragent==0.1.11
 filelock==3.0.12
