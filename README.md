@@ -12,24 +12,35 @@ Libraries:
 ![Pandas](https://img.shields.io/badge/Pandas-1.2.4-brightgreen)
 
 
-## Contents
+#### Contents
 - [Description](#description)
 - [Dataset](#dataset)
 - [Task](#task)
 - [Solutions](#solutions)
+- [How to run it](#howtorun)
+- [How to contribute](#howtocontribute)
+- [Demo](#demo)
+- [Authors](#authors)
 
 ------------------------
+<a name="description"/>
 
-# Description
+## Description
 Development of a custom sentiment analysis model related to **financial news**
 
-# Dataset
+<a name="dataset"/>
+
+## Dataset
 Data are extracted by *scraping* **yahoo finance** and **twitter posts**
 
-# Task
+<a name="task"/>
+
+## Task
 Text Classification
 
-# Solutions
+<a name="solutions"/>
+
+## Solutions
 - Existent Models
   - Spacy model
   - Bert model
@@ -40,7 +51,52 @@ Text Classification
   - *CNN-LSTM Network* (**Work in progress**)
 
 ------------------------
+<a name="howtorun"/>
 
+## How to run 
+0. Create a new virtual environment
+```
+python -m venv ./venv
+source venv/bin/activate
+pip install --upgrade pip
+```
+1. Clone the repository and move to the downloaded directory
+```
+git clone https://github.com/daniele21/Financial_Sentiment_Analysis.git
+cd Financial_Sentiment_Analysis 
+```
+2. Request [Polyglon's API key]() (FREE)
+3. Write the given key in 'files/api_key_polyglon.txt' 
+```
+echo API_KEY > files/api_key_polyglon.txt
+```
+4. Install the requirements
+```
+pip install requirements.txt
+```
+5. Run local server and dashboard
+```
+python api_server.py
+streamlit run main.py
+```
+6. You're ready to go! 
+
+<a name="howtocontribute"/>
+
+## How to contribute
+1. Fork the repository
+2. Do the desired changes
+3. Make a pull request
+
+
+<a name="demo" />
+
+## Demo (GIF)
+<p align="center">
+  <img src="demo/demo.gif" />
+</p>
+
+<a name="authors"/>
 
 #### Authors
 
