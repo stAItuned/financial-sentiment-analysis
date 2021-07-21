@@ -62,8 +62,8 @@ pip install --upgrade pip
 ```
 1. Clone the repository and move to the downloaded directory
 ```
-git clone https://github.com/daniele21/Financial_Sentiment_Analysis.git
-cd Financial_Sentiment_Analysis 
+git clone https://github.com/sicilian-scientists/financial-sentiment-analysis
+cd financial-sentiment-analysis
 ```
 2. Request [Polyglon's API key]() (FREE)
 3. Write the given key in 'files/api_key_polyglon.txt' 
