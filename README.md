@@ -2,8 +2,8 @@
 
 
 <p align="center">
-  <img height="300" src="demo/img1.jpg">
-  <img height="300" src="demo/img2.jpg">
+  <img height="270" src="demo/img1.jpg">
+  <img height="270" src="demo/img2.jpg">
 </p>
 
 | **License** | **Language** | **Libraries** |
