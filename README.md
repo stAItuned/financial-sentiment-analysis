@@ -105,3 +105,4 @@ streamlit run main.py
 
 
 [![Linkedin](https://img.shields.io/badge/Linkedin-Francesco_Di_Salvo-blue)](https://www.linkedin.com/in/francescodisalvo-pa/)
+[![Portfolio](https://img.shields.io/badge/Portfolio-Francesco_Di_Salvo-9cf)](https://francescodisalvo05.github.io/)
