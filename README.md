@@ -1,18 +1,17 @@
-# Financial Sentiment Analysis project
-
-![Licence](https://img.shields.io/badge/Licence-MIT-orange)
-
-![Python](https://img.shields.io/badge/Python-yellow)
-
-Libraries: 
-
-![Pytorch](https://img.shields.io/badge/Pytorch-1.8.1-brightgreen)
-![Flask](https://img.shields.io/badge/Flask-2.0.0-brightgreen)
-![Streamlit](https://img.shields.io/badge/Streamlit-0.82.0-brightgreen)
-![Pandas](https://img.shields.io/badge/Pandas-1.2.4-brightgreen)
+# Financial Sentiment Analysis
 
 
-#### Contents
+<p align="center">
+  <img height="300" src="demo/img1.jpg">
+  <img height="300" src="demo/img2.jpg">
+</p>
+
+| **License** | **Language** | **Libraries** |
+| ----- | ---- | ---- |
+| ![Licence](https://img.shields.io/badge/Licence-MIT-orange) |  ![Python](https://img.shields.io/badge/Python-yellow)| ![Pytorch](https://img.shields.io/badge/Pytorch-1.8.1-brightgreen) ![Flask](https://img.shields.io/badge/Flask-2.0.0-brightgreen) ![Streamlit](https://img.shields.io/badge/Streamlit-0.82.0-brightgreen) ![Pandas](https://img.shields.io/badge/Pandas-1.2.4-brightgreen) 
+
+
+### Contents
 - [Description](#description)
 - [Dataset](#dataset)
 - [Task](#task)
@@ -23,6 +22,7 @@ Libraries:
 - [Authors](#authors)
 
 ------------------------
+
 <a name="description"/>
 
 ## Description
@@ -88,13 +88,13 @@ streamlit run main.py
 2. Do the desired changes
 3. Make a pull request
 
-
 <a name="demo" />
 
 ## Demo (GIF)
 <p align="center">
-  <img src="demo/demo.gif" />
+  <img src="demo/demo.gif" height="50%"/>
 </p>
+
 
 <a name="authors"/>
 
