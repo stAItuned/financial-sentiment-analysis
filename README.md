@@ -14,7 +14,7 @@
 ### Contents
 - [Description](#description)
 - [Dataset](#dataset)
-- [Task](#task)
+- [Structure](#structure)
 - [Solutions](#solutions)
 - [How to run it](#howtorun)
 - [How to contribute](#howtocontribute)
@@ -26,29 +26,23 @@
 <a name="description"/>
 
 ## Description
-Development of a custom sentiment analysis model related to **financial news**
+The goal of this project is to give you the chance of looking at the **dependence** between the **news sentiment** of a company with respect to its **share price**. 
+*This project is one part of a main project still on its way, which aims to provide a financial analysis platform.*
 
 <a name="dataset"/>
 
 ## Dataset
-Data are extracted by *scraping* **yahoo finance** and **twitter posts**
+News data are taken from the [polyglon AIP](https://polygon.io/), using the *stocks basic API plan* account.
 
-<a name="task"/>
+<a name="structure"/>
 
-## Task
-Text Classification
+## Structure
+The project structure consists on a **server side**, which manages the calls to the sentiment analysis model. The server provides a **service API** for the inference of the model. 
 
 <a name="solutions"/>
 
 ## Solutions
-- Existent Models
-  - Spacy model
-  - Bert model
-
----------
-- Custom Models
-  - CNN Network
-  - *CNN-LSTM Network* (**Work in progress**)
+We developed the *sentiment analysis model* as a **neural network model**, based on **fine-tuning** of an existent pre-trained model. We trained and experimented different models, until we reached the **best one**. In order to keep our model **private**, we provide **just** a pre-trained model as a sentiment analysis model, that is the **transformers** model taken from *hugging face*
 
 ------------------------
 <a name="howtorun"/>
