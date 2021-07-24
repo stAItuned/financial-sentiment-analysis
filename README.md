@@ -37,7 +37,7 @@ News data are taken from the [polyglon AIP](https://polygon.io/), using the *sto
 <a name="structure"/>
 
 ## Structure
-The project structure consists on a **server side**, which manages the calls to the sentiment analysis model. The server provides a **service API** for the inference of the model. 
+The project structure is based on a **server side**, which manages the calls to the sentiment analysis model, and a **client side**, that show a UI. The **server** provides a **service API** for the inference of the model and the extraction of news and stock data, while the **client** is developed as a platform, generated with *streamlit*, that allows the user to interact with the server side, searching the interested companies to be analyzed.
 
 <a name="solutions"/>
 
