@@ -32,7 +32,7 @@ The goal of this project is to give you the chance of looking at the **dependenc
 <a name="dataset"/>
 
 ## Dataset
-News data are taken from the [polyglon AIP](https://polygon.io/), using the *stocks basic API plan* account.
+News data are taken through [Polyglon](https://polygon.io/) APIs, using the *stocks basic API plan* account.
 
 <a name="structure"/>
 
